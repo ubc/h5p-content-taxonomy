@@ -1,0 +1,14 @@
+input[id^=react-select-] {
+  box-shadow: none !important;
+  min-height: 0 !important; }
+
+#h5p-taxonomy {
+  margin-top: 20px;
+  max-width: 960px; }
+  #h5p-taxonomy .taxonomy.postbox {
+    padding: 15px; }
+    #h5p-taxonomy .taxonomy.postbox > h2 {
+      margin-top: 0; }
+
+
+/*# sourceMappingURL=h5p-new.css.map*/
