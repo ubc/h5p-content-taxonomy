@@ -96,17 +96,25 @@ class ContentTaxonomyDB {
 	 * @param array  $filters Must be defined like so: array(array('field', 'Cool Content', 'LIKE')).
 	 * @return array query results.
 	 */
-	public static function get_contents( $context = 'self', $sortby = 'updated_at', $limit = null, $offset = null, $order_by = null, $reverse_order = null, $filters = null ) {
+	public static function get_contents( $context = 'self', $sortby = 0, $reverse_order = false, $limit = null, $offset = null, $search = null ) {
 		if ( ! class_exists( 'H5PContentQuery' ) ) {
 			return array();
 		}
+
+		$order_by_array = array(
+			'hc.updated_at',
+			'hc.title',
+			'hl.title',
+			'u.display_name',
+			'hc.id',
+		);
 
 		global $wpdb;
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		$user_faculty = get_user_meta( get_current_user_id(), 'user_faculty', true );
 		$user_faculty_content_ids = self::get_content_ids_by_faculty( $user_faculty );
 
-		$base_select = "SELECT hc.title AS title, hl.title AS content_type, u.display_name AS user_name, GROUP_CONCAT(DISTINCT CONCAT(t.id,',',t.name) ORDER BY t.id SEPARATOR ';') AS tags, hc.updated_at AS updated_at, hc.id AS id, u.ID AS user_id, hl.name AS content_type_id";
+		$base_select = "SELECT hc.title AS title, hl.title AS content_type, u.display_name AS user_name, GROUP_CONCAT(DISTINCT t.name SEPARATOR ';') AS tags, hc.updated_at AS updated_at, hc.id AS id, u.ID AS user_id, hl.name AS content_type_id";
 		$base_count  = 'SELECT COUNT(*)';
 
 		$base_query = ' FROM wp_h5p_contents hc
@@ -118,13 +126,14 @@ class ContentTaxonomyDB {
 
 		$groupby_query    = ' GROUP BY hc.id';
 		$context_query    = 'self' === $context ? " WHERE u.ID = '" . get_current_user_id() . "'" : ' WHERE hc.id IN (' . implode( ',', $user_faculty_content_ids ) . ') AND u.ID != ' . get_current_user_id();
-		$sortby_query     = ' ORDER BY hc.' . $sortby . ' DESC';
+		$search_query     = empty( $search ) ? '' : " AND ( hc.title LIKE '%" . $search . "%' OR u.display_name LIKE '%" . $search . "%' )";
+		$sortby_query     = ' ORDER BY ' . $order_by_array[ $sortby ] . ( $reverse_order ? ' ASC' : ' DESC' );
 		$pagination_query = ' LIMIT ' . ( $offset ? $offset : '0' ) . ' ,' . ( $limit ? $limit : '20' );
 
-		$content_query        = $base_select . $base_query . $context_query . $groupby_query . $sortby_query . $pagination_query;
+		$content_query        = $base_select . $base_query . $context_query . $search_query . $groupby_query . $sortby_query . $pagination_query;
 		$content_query_result = $wpdb->get_results( $content_query );
 
-		$count_query        = $base_count . $base_query . $context_query . $groupby_query . $sortby_query;
+		$count_query        = $base_count . $base_query . $context_query . $search_query . $groupby_query . $sortby_query;
 		$count_query_result = $wpdb->get_results( $count_query );
 
 		return array(

@@ -146,8 +146,10 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
 /* harmony default export */ __webpack_exports__["default"] = (props => {
   const [data, setData] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
   const [offset, setOffset] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0);
-  const [sort, SetSort] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(4);
+  const [sort, setSort] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0);
+  const [revert, setRevert] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const [countTotal, setCountTotal] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0);
+  const [search, setSearch] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('');
   const limit = 20;
   const sortDir = 0;
   const tabOptions = [{
@@ -159,6 +161,10 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
   }];
   const [currentTab, setCurrentTab] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0);
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(() => {
+    doFetch();
+  }, [currentTab, offset, sort, revert]);
+
+  const doFetch = () => {
     async function fetch() {
       let data = await fetchFromAPI();
       setData(data.data.data);
@@ -166,7 +172,21 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     }
 
     fetch();
-  }, [currentTab, offset, sort]);
+  };
+
+  const updateSort = newSort => {
+    if (-1 === newSort) {
+      setSort(0);
+      setRevert(false);
+    } else {
+      if (sort === newSort) {
+        setRevert(!revert);
+      } else {
+        setSort(newSort);
+        setRevert(false);
+      }
+    }
+  };
 
   const fetchFromAPI = async () => {
     let formData = new FormData();
@@ -174,7 +194,8 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     formData.append('offset', offset);
     formData.append('limit', limit);
     formData.append('sortBy', sort);
-    formData.append('sortDir', sortDir);
+    formData.append('revert', revert);
+    formData.append('search', search);
     formData.append('context', tabOptions[currentTab].slug);
     formData.append('nonce', h5p_listing_view_obj.security_nonce);
     let response = await fetch(ajaxurl, {
@@ -209,7 +230,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 75,
+      lineNumber: 96,
       columnNumber: 9
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -217,7 +238,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 76,
+      lineNumber: 97,
       columnNumber: 13
     }
   }, tabOptions.map((tab, index) => {
@@ -227,15 +248,41 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
       onClick: e => {
         currentTab !== index ? setCurrentTab(index) : null;
         setOffset(0);
-        SetSort(4);
+        updateSort(-1);
       },
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 78,
+        lineNumber: 99,
         columnNumber: 109
       }
     }, tab.label);
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 112,
+      columnNumber: 13
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "text",
+    id: "search",
+    placeholder: "Search...",
+    onKeyUp: e => {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        doFetch();
+      }
+    },
+    onChange: e => {
+      setSearch(e.target.value);
+    },
+    value: search,
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 113,
+      columnNumber: 17
+    }
   })), data ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
     className: "wp-list-table widefat fixed",
     style: {
@@ -244,48 +291,57 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 91,
+      lineNumber: 128,
       columnNumber: 22
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 92,
+      lineNumber: 129,
       columnNumber: 17
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 93,
+      lineNumber: 130,
       columnNumber: 21
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     role: "button",
     tabIndex: "0",
+    onClick: () => {
+      updateSort(1);
+    },
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 94,
+      lineNumber: 131,
       columnNumber: 25
     }
   }, "Title"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     role: "button",
     tabIndex: "0",
+    onClick: () => {
+      updateSort(2);
+    },
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 98,
+      lineNumber: 138,
       columnNumber: 25
     }
   }, "Content Type"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     role: "button",
     tabIndex: "0",
+    onClick: () => {
+      updateSort(3);
+    },
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 99,
+      lineNumber: 145,
       columnNumber: 25
     }
   }, "Author"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -294,25 +350,31 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 100,
+      lineNumber: 152,
       columnNumber: 25
     }
   }, "Tags"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     role: "button",
     tabIndex: "0",
+    onClick: () => {
+      updateSort(0);
+    },
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 101,
+      lineNumber: 153,
       columnNumber: 25
     }
   }, "Last Modified"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     role: "button",
     tabIndex: "0",
+    onClick: () => {
+      updateSort(4);
+    },
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 102,
+      lineNumber: 160,
       columnNumber: 25
     }
   }, "ID"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -321,7 +383,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 103,
+      lineNumber: 167,
       columnNumber: 25
     }
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -330,21 +392,21 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 104,
+      lineNumber: 168,
       columnNumber: 25
     }
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tfoot", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 107,
+      lineNumber: 171,
       columnNumber: 17
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 108,
+      lineNumber: 172,
       columnNumber: 21
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
@@ -352,7 +414,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 109,
+      lineNumber: 173,
       columnNumber: 25
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -360,7 +422,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 110,
+      lineNumber: 174,
       columnNumber: 29
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
@@ -373,14 +435,14 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 111,
+      lineNumber: 175,
       columnNumber: 33
     }
   }, "<"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 119,
+      lineNumber: 183,
       columnNumber: 33
     }
   }, `Page ${(offset + limit) / limit} of ${Math.ceil(countTotal / limit)}`), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
@@ -393,75 +455,73 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 120,
+      lineNumber: 184,
       columnNumber: 33
     }
   }, ">"))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 132,
+      lineNumber: 196,
       columnNumber: 17
     }
   }, data.map((entry, index) => {
-    const formattedTags = entry.tags ? entry.tags.split(';').map(tag => {
-      return tag.split(',')[1];
-    }).join(',') : '';
+    const formattedTags = entry.tags ? entry.tags.split(';').join(',') : '';
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
       key: index,
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 139,
+        lineNumber: 201,
         columnNumber: 25
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 140,
+        lineNumber: 202,
         columnNumber: 29
       }
     }, entry.title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 141,
+        lineNumber: 203,
         columnNumber: 29
       }
     }, entry.content_type), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 142,
+        lineNumber: 204,
         columnNumber: 29
       }
     }, entry.user_name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 143,
+        lineNumber: 205,
         columnNumber: 29
       }
     }, formattedTags), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 144,
+        lineNumber: 206,
         columnNumber: 29
       }
     }, entry.updated_at), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 145,
+        lineNumber: 207,
         columnNumber: 29
       }
     }, entry.id), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 146,
+        lineNumber: 208,
         columnNumber: 29
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -469,14 +529,14 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 146,
+        lineNumber: 208,
         columnNumber: 33
       }
     }, "Results")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 147,
+        lineNumber: 209,
         columnNumber: 29
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -484,7 +544,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 147,
+        lineNumber: 209,
         columnNumber: 33
       }
     }, "Edit")));

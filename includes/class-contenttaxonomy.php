@@ -349,11 +349,11 @@ class ContentTaxonomy {
 		check_ajax_referer( 'security', 'nonce' );
 
 		$context = isset( $_POST['context'] ) ? sanitize_text_field( wp_unslash( $_POST['context'] ) ) : 'self';
-		$sortby  = isset( $_POST['sortby'] ) ? sanitize_text_field( wp_unslash( $_POST['sortby'] ) ) : 'updated_at';
+		$sortby  = isset( $_POST['sortby'] ) ? intval( $_POST['sortby'] ) : 0;
+		$revert  = isset( $_POST['revert'] ) && 'true' === $_POST['revert'];
 		$limit   = isset( $_POST['limit'] ) ? sanitize_text_field( wp_unslash( $_POST['limit'] ) ) : null;
 		$offset  = isset( $_POST['offset'] ) ? sanitize_text_field( wp_unslash( $_POST['offset'] ) ) : null;
 		$search  = isset( $_POST['search'] ) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : null;
-		$orderby = isset( $_POST['orderby'] ) ? sanitize_text_field( wp_unslash( $_POST['orderby'] ) ) : null;
 
 		// Nothing is changed for administrator or network administrator.
 		if ( current_user_can( 'manage_options' ) ) {
@@ -362,7 +362,7 @@ class ContentTaxonomy {
 
 		// If user has editor role. Then they should be able to see their own contents + contents within their assigned faculty.
 		if ( current_user_can( 'edit_others_h5p_contents' ) ) {
-			$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $limit, $offset, $orderby, $search );
+			$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $revert, $limit, $offset, $search );
 			wp_send_json_success( $contents );
 		}
 
@@ -371,7 +371,7 @@ class ContentTaxonomy {
 			wp_send_json_success( array() );
 		}
 
-		$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $limit, $offset, $orderby, $search );
+		$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $revert, $limit, $offset, $search );
 		wp_send_json_success( $contents );
 	}//end list_contents()
 }

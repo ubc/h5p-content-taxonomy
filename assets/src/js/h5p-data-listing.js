@@ -4,8 +4,10 @@ export default ( props ) => {
 
     const [data, setData] = useState([]);
     const [offset, setOffset] = useState(0);
-    const [sort, SetSort] = useState(4);
+    const [sort, setSort] = useState(0);
+    const [revert, setRevert] = useState(false);
     const [countTotal, setCountTotal] = useState(0);
+    const [search, setSearch] = useState('');
     const limit = 20;
     const sortDir = 0;
 
@@ -22,6 +24,10 @@ export default ( props ) => {
     const [currentTab, setCurrentTab] = useState(0);
 
     useEffect(() => {
+        doFetch();
+    }, [ currentTab, offset, sort, revert ]);
+
+    const doFetch = () => {
         async function fetch() {
             let data = await fetchFromAPI();
             setData( data.data.data );
@@ -29,7 +35,21 @@ export default ( props ) => {
         }
         
         fetch();
-    }, [ currentTab, offset, sort ]);
+    }
+
+    const updateSort = newSort => {
+        if( -1 === newSort ) {
+            setSort(0);
+            setRevert(false);
+        }else{
+            if( sort === newSort ) {
+                setRevert(!revert);
+            } else {
+                setSort(newSort);
+                setRevert(false);
+            }
+        }
+    }
 
     const fetchFromAPI = async () => {
         let formData = new FormData();
@@ -38,7 +58,8 @@ export default ( props ) => {
         formData.append( 'offset', offset );
         formData.append( 'limit', limit );
         formData.append( 'sortBy', sort );
-        formData.append( 'sortDir', sortDir );
+        formData.append( 'revert', revert );
+        formData.append( 'search', search );
         formData.append( 'context', tabOptions[currentTab].slug );
         formData.append( 'nonce', h5p_listing_view_obj.security_nonce );
 
@@ -81,12 +102,28 @@ export default ( props ) => {
                             onClick={ e => {
                                 currentTab !== index ? setCurrentTab( index ) : null;
                                 setOffset(0);
-                                SetSort(4);
+                                updateSort( -1 );
                             }}
                         >
                             { tab.label}
                         </button>
                 }) }
+            </div>
+            <div>
+                <input
+                    type="text"
+                    id="search"
+                    placeholder="Search..."
+                    onKeyUp={ e => {
+                        if (e.key === 'Enter' || e.keyCode === 13) {
+                            doFetch();
+                        }
+                    }}
+                    onChange={ e => {
+                        setSearch(e.target.value);
+                    }}
+                    value={search}
+                />
             </div>
             { data ? <table className="wp-list-table widefat fixed" style={{ marginTop: '20px' }}>
                 <thead>
@@ -94,12 +131,39 @@ export default ( props ) => {
                         <th
                             role="button"
                             tabIndex="0"
+                            onClick={() => {
+                                updateSort(1);
+                            }}
                         >Title</th>
-                        <th role="button" tabIndex="0">Content Type</th>
-                        <th role="button" tabIndex="0">Author</th>
+                        <th
+                            role="button"
+                            tabIndex="0"
+                            onClick={() => {
+                                updateSort(2);
+                            }}
+                        >Content Type</th>
+                        <th
+                            role="button"
+                            tabIndex="0"
+                            onClick={() => {
+                                updateSort(3);
+                            }}
+                        >Author</th>
                         <th role="button" tabIndex="0">Tags</th>
-                        <th role="button" tabIndex="0">Last Modified</th>
-                        <th role="button" tabIndex="0">ID</th>
+                        <th
+                            role="button"
+                            tabIndex="0"
+                            onClick={() => {
+                                updateSort(0);
+                            }}
+                        >Last Modified</th>
+                        <th
+                            role="button"
+                            tabIndex="0"
+                            onClick={() => {
+                                updateSort(4);
+                            }}
+                        >ID</th>
                         <th role="button" tabIndex="0"></th>
                         <th role="button" tabIndex="0"></th>
                     </tr>
@@ -131,9 +195,7 @@ export default ( props ) => {
                 </tfoot>
                 <tbody>
                 { data.map( (entry, index) => {
-                    const formattedTags = entry.tags ? entry.tags.split(';').map(tag => {
-                        return tag.split(',')[1];
-                    }).join(',') : '';
+                    const formattedTags = entry.tags ? entry.tags.split(';').join(',') : '';
 
                     return (
                         <tr key={ index }>
