@@ -17,3 +17,12 @@
 #search{
     margin-top: 20px;
 }
+
+#h5p-contents{
+    table{
+        th[role=button]{
+            cursor: pointer;
+            color: #1572b7;
+        }
+    }
+}

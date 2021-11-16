@@ -14,5 +14,9 @@
 #search {
   margin-top: 20px; }
 
+#h5p-contents table th[role=button] {
+  cursor: pointer;
+  color: #1572b7; }
+
 
 /*# sourceMappingURL=h5p-listing-view.css.map*/

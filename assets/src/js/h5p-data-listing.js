@@ -9,7 +9,6 @@ export default ( props ) => {
     const [countTotal, setCountTotal] = useState(0);
     const [search, setSearch] = useState('');
     const limit = 20;
-    const sortDir = 0;
 
     const tabOptions = [
         {
@@ -149,7 +148,7 @@ export default ( props ) => {
                                 updateSort(3);
                             }}
                         >Author</th>
-                        <th role="button" tabIndex="0">Tags</th>
+                        <th tabIndex="0">Tags</th>
                         <th
                             role="button"
                             tabIndex="0"
@@ -164,8 +163,8 @@ export default ( props ) => {
                                 updateSort(4);
                             }}
                         >ID</th>
-                        <th role="button" tabIndex="0"></th>
-                        <th role="button" tabIndex="0"></th>
+                        <th tabIndex="0"></th>
+                        <th tabIndex="0"></th>
                     </tr>
                 </thead>
                 <tfoot>
