@@ -20,9 +20,31 @@
 
 #h5p-contents{
     table{
+        table-layout: auto;
         th[role=button]{
             cursor: pointer;
             color: #1572b7;
+        }
+        td, th{
+            padding: 10px 20px;
+            box-sizing: border-box;
+        }
+        th{
+            &.faculty-tab{
+                width: 300px;
+
+                @media only screen and (min-width: 1280px) {
+                    width: 500px;
+                }
+            }
+
+            &.tag-tab{
+                width: 200px;
+
+                @media only screen and (min-width: 1280px) {
+                    width: 300px;
+                }
+            }
         }
     }
 }

@@ -136,8 +136,30 @@ class ContentTaxonomyDB {
 		$count_query        = $base_count . $base_query . $context_query . $search_query . $groupby_query . $sortby_query;
 		$count_query_result = $wpdb->get_results( $count_query );
 
+		// Retrieve faculty information for the contents.
+		$data = array_map(
+			function( $content ) {
+				$content->faculty = self::get_content_terms_by_taxonomy( $content->id, 'faculty' );
+				$content->faculty = array_map(
+					function( $term_id ) {
+						return get_term_by( 'id', $term_id, 'ubc_h5p_content_faculty' );
+					},
+					$content->faculty
+				);
+				$content->faculty = array_filter(
+					$content->faculty,
+					function( $term ) {
+						return false !== $term;
+					}
+				);
+
+				return $content;
+			},
+			array_values( $content_query_result )
+		);
+
 		return array(
-			'data' => array_values( $content_query_result ),
+			'data' => $data,
 			'num'  => count( $count_query_result ),
 		);
 	}//end get_contents()

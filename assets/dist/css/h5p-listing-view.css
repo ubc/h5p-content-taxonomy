@@ -14,9 +14,24 @@
 #search {
   margin-top: 20px; }
 
-#h5p-contents table th[role=button] {
-  cursor: pointer;
-  color: #1572b7; }
+#h5p-contents table {
+  table-layout: auto; }
+  #h5p-contents table th[role=button] {
+    cursor: pointer;
+    color: #1572b7; }
+  #h5p-contents table td, #h5p-contents table th {
+    padding: 10px 20px;
+    box-sizing: border-box; }
+  #h5p-contents table th.faculty-tab {
+    width: 300px; }
+    @media only screen and (min-width: 1280px) {
+      #h5p-contents table th.faculty-tab {
+        width: 500px; } }
+  #h5p-contents table th.tag-tab {
+    width: 200px; }
+    @media only screen and (min-width: 1280px) {
+      #h5p-contents table th.tag-tab {
+        width: 300px; } }
 
 
 /*# sourceMappingURL=h5p-listing-view.css.map*/

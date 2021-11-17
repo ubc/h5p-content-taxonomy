@@ -12,11 +12,11 @@ export default ( props ) => {
 
     const tabOptions = [
         {
-            label: 'My H5P contents',
+            label: 'My H5P content',
             slug: 'self'
         },
         {
-            label: 'My faculty H5P contents',
+            label: 'My faculty H5P content',
             slug: 'faculty'
         }
     ];
@@ -93,9 +93,9 @@ export default ( props ) => {
 
     return (
         <Fragment>
-            <div className="h5p-button-groups">
+            { ! h5p_listing_view_obj.can_user_editor_others ? null : <div className="h5p-button-groups">
                 { tabOptions.map( (tab, index) => {
-                    return ! h5p_listing_view_obj.can_user_editor_others && tab.slug === 'faculty' ? null : <button
+                    return  <button
                             className={`${currentTab === index ? 'active' : ''}`}
                             key={ index }
                             onClick={ e => {
@@ -107,7 +107,7 @@ export default ( props ) => {
                             { tab.label}
                         </button>
                 }) }
-            </div>
+            </div> }
             <div>
                 <input
                     type="text"
@@ -148,7 +148,8 @@ export default ( props ) => {
                                 updateSort(3);
                             }}
                         >Author</th>
-                        <th tabIndex="0">Tags</th>
+                        <th tabIndex="0" className="faculty-tab">Faculties</th>
+                        <th tabIndex="0" className="tag-tab">Tags</th>
                         <th
                             role="button"
                             tabIndex="0"
@@ -156,14 +157,6 @@ export default ( props ) => {
                                 updateSort(0);
                             }}
                         >Last Modified</th>
-                        <th
-                            role="button"
-                            tabIndex="0"
-                            onClick={() => {
-                                updateSort(4);
-                            }}
-                        >ID</th>
-                        <th tabIndex="0"></th>
                         <th tabIndex="0"></th>
                     </tr>
                 </thead>
@@ -195,17 +188,19 @@ export default ( props ) => {
                 <tbody>
                 { data.map( (entry, index) => {
                     const formattedTags = entry.tags ? entry.tags.split(';').join(',') : '';
+                    const faculties = entry.faculty.map( fac => {
+                        return fac.name;
+                    });
 
                     return (
                         <tr key={ index }>
-                            <td>{ entry.title }</td>
+                            <td><a href={`${h5p_listing_view_obj.admin_url}admin.php?page=h5p_new&id=${entry.id}`}>{ entry.title }</a></td>
                             <td>{ entry.content_type }</td>
                             <td>{ entry.user_name }</td>
+                            <td>{ faculties.join(',') }</td>
                             <td>{ formattedTags }</td>
                             <td>{ entry.updated_at }</td>
-                            <td>{ entry.id }</td>
                             <td><a href={`${h5p_listing_view_obj.admin_url}admin.php?page=h5p&task=results&id=${entry.id}`}>Results</a></td>
-                            <td><a href={`${h5p_listing_view_obj.admin_url}admin.php?page=h5p_new&id=${entry.id}`}>Edit</a></td>
                         </tr>
                     );
                 }) }
