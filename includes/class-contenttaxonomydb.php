@@ -117,12 +117,12 @@ class ContentTaxonomyDB {
 		$base_select = "SELECT hc.title AS title, hl.title AS content_type, u.display_name AS user_name, GROUP_CONCAT(DISTINCT t.name SEPARATOR ';') AS tags, hc.updated_at AS updated_at, hc.id AS id, u.ID AS user_id, hl.name AS content_type_id";
 		$base_count  = 'SELECT COUNT(*)';
 
-		$base_query = ' FROM wp_h5p_contents hc
-			LEFT JOIN wp_h5p_libraries hl ON hl.id = hc.library_id 
-			LEFT JOIN wp_users u ON hc.user_id = u.ID 
-			LEFT JOIN wp_h5p_contents_tags ct ON ct.content_id = hc.id
-			LEFT JOIN wp_h5p_tags t ON ct.tag_id = t.id
-			LEFT JOIN wp_h5p_contents_tags ct2 ON ct2.content_id = hc.id';
+		$base_query = ' FROM ' . $wpdb->prefix . 'h5p_contents hc
+			LEFT JOIN ' . $wpdb->prefix . 'h5p_libraries hl ON hl.id = hc.library_id 
+			LEFT JOIN ' . $wpdb->prefix . 'users u ON hc.user_id = u.ID 
+			LEFT JOIN ' . $wpdb->prefix . 'h5p_contents_tags ct ON ct.content_id = hc.id
+			LEFT JOIN ' . $wpdb->prefix . 'h5p_tags t ON ct.tag_id = t.id
+			LEFT JOIN ' . $wpdb->prefix . 'h5p_contents_tags ct2 ON ct2.content_id = hc.id';
 
 		$groupby_query    = ' GROUP BY hc.id';
 		$context_query    = 'self' === $context ? " WHERE u.ID = '" . get_current_user_id() . "'" : ' WHERE hc.id IN (' . implode( ',', $user_faculty_content_ids ) . ') AND u.ID != ' . get_current_user_id();
