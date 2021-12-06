@@ -88,12 +88,13 @@ class ContentTaxonomyDB {
 	/**
 	 * List all the H5P contents based on query.
 	 *
-	 * @param array  $sortby the field to sort the content by.
-	 * @param int    $offset Skip this many rows.
+	 * @param string $context either the query is for user themselves or their faculties.
+	 * @param string $sortby the field to sort the content by.
+	 * @param string $reverse_order whether sort by reverse order.
 	 * @param int    $limit Max number of rows to return.
-	 * @param string $order_by Field to order content by.
-	 * @param bool   $reverse_order Reverses the ordering.
-	 * @param array  $filters Must be defined like so: array(array('field', 'Cool Content', 'LIKE')).
+	 * @param int    $offset skip this many rows.
+	 * @param string $search terms to search.
+	 * @param bool   $term_ids term ids to filter the result by. Only expect at most two terms to be searched.
 	 * @return array query results.
 	 */
 	public static function get_contents( $context = 'self', $sortby = 0, $reverse_order = false, $limit = null, $offset = null, $search = null, $term_ids = array() ) {
@@ -111,7 +112,7 @@ class ContentTaxonomyDB {
 
 		global $wpdb;
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		$user_faculty = get_user_meta( get_current_user_id(), 'user_faculty', true );
+		$user_faculty             = get_user_meta( get_current_user_id(), 'user_faculty', true );
 		$user_faculty_content_ids = self::get_content_ids_by_faculty( $user_faculty );
 
 		$base_select = "SELECT hc.title AS title, hl.title AS content_type, u.display_name AS user_name, GROUP_CONCAT(DISTINCT t.name SEPARATOR ';') AS tags, hc.updated_at AS updated_at, hc.id AS id, u.ID AS user_id, hl.name AS content_type_id";

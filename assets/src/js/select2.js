@@ -1,7 +1,5 @@
-import React, { CSSProperties } from 'react';
-
+import React from 'react';
 import Select from 'react-select';
-
 
 export default props => {
     const { selected, options, setSelected, isMulti=true } = props;

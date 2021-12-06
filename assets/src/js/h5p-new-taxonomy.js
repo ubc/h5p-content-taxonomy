@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import 'url-search-params-polyfill';
 import Faculty from './h5p-new-taxonomy-faculty';
 import Discipline from './h5p-new-taxonomy-discipline';

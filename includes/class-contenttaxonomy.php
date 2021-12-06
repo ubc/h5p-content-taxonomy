@@ -356,7 +356,7 @@ class ContentTaxonomy {
 		$limit   = isset( $_POST['limit'] ) ? sanitize_text_field( wp_unslash( $_POST['limit'] ) ) : null;
 		$offset  = isset( $_POST['offset'] ) ? sanitize_text_field( wp_unslash( $_POST['offset'] ) ) : null;
 		$search  = isset( $_POST['search'] ) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : null;
-		$terms  = isset( $_POST['terms'] ) ? json_decode($_POST['terms']) : array();
+		$terms   = isset( $_POST['terms'] ) ? json_decode($_POST['terms']) : array();
 
 		// Nothing is changed for administrator or network administrator.
 		if ( current_user_can( 'manage_options' ) ) {
