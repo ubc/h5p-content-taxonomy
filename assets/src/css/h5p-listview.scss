@@ -14,8 +14,15 @@
     }
 }
 
-#search{
+#h5p-filters{
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 200px 1fr 1fr;
     margin-top: 20px;
+
+    @media only screen and (max-width: 600px) {
+        grid-template-columns: 1fr;
+    }
 }
 
 #h5p-contents{

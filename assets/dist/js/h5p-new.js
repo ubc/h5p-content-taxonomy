@@ -153,13 +153,15 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
   const displine_list = ubc_h5p_admin.disciplines_list;
   const {
     disciplineSelected,
-    setDisciplineSelected
+    setDisciplineSelected,
+    isMulti
   } = props;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
     selected: disciplineSelected,
     options: displine_list,
     setSelected: setDisciplineSelected,
     name: "ubc-h5p-content-discipline",
+    isMulti: isMulti,
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
@@ -190,13 +192,15 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
   const faculty_list = ubc_h5p_admin.faculties_list;
   const {
     facultySelected,
-    setFacultySelected
+    setFacultySelected,
+    isMulti
   } = props;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
     selected: facultySelected,
     options: faculty_list,
     setSelected: setFacultySelected,
     name: "ubc-h5p-content-faculty",
+    isMulti: isMulti,
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
@@ -373,10 +377,11 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
   const {
     selected,
     options,
-    setSelected
+    setSelected,
+    isMulti = true
   } = props; // selected is an array of options values. Need to convert to proper data structure
 
-  let newSelected = []; // Reformat options to required data structure.
+  let newSelected = isMulti ? [] : ''; // Reformat options to required data structure.
 
   let newOptions = Object.keys(options).map(campusIndex => {
     return {
@@ -387,28 +392,40 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
           value: options[campusIndex].children[facultyIndex].term_id
         };
 
-        if (selected.includes(options[campusIndex].children[facultyIndex].term_id)) {
+        if (isMulti && selected.includes(options[campusIndex].children[facultyIndex].term_id)) {
           newSelected.push(faculty);
+        }
+
+        if (!isMulti && selected === options[campusIndex].children[facultyIndex].term_id) {
+          newSelected = faculty;
         }
 
         return faculty;
       }) : []
     };
   });
+
+  if (!isMulti) {
+    newOptions.unshift({
+      label: 'All',
+      value: ''
+    });
+  }
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_select__WEBPACK_IMPORTED_MODULE_1__["default"], {
     value: newSelected,
-    isMulti: true,
+    isMulti: isMulti,
     options: newOptions,
     onChange: optionSelected => {
       // Convert it back to array of ids.
-      setSelected(optionSelected.map(option => {
+      setSelected(isMulti ? optionSelected.map(option => {
         return option.value;
-      }));
+      }) : optionSelected.value);
     },
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 31,
+      lineNumber: 42,
       columnNumber: 9
     }
   });

@@ -4,11 +4,10 @@ import Select from 'react-select';
 
 
 export default props => {
-    const { selected, options, setSelected } = props;
+    const { selected, options, setSelected, isMulti=true } = props;
 
     // selected is an array of options values. Need to convert to proper data structure
-    let newSelected = [];
-
+    let newSelected = isMulti ? [] : '';
     // Reformat options to required data structure.
     let newOptions = Object.keys(options).map( campusIndex => {
         return {
@@ -19,24 +18,36 @@ export default props => {
                     value: options[campusIndex].children[facultyIndex].term_id
                 };
 
-                if( selected.includes( options[campusIndex].children[facultyIndex].term_id ) ) {
+                if( isMulti && selected.includes( options[campusIndex].children[facultyIndex].term_id ) ) {
                     newSelected.push( faculty );
                 }
+
+                if( !isMulti && selected === options[campusIndex].children[facultyIndex].term_id ) {
+                    newSelected = faculty;
+                }
+
                 return faculty;
             }) : []
         }
     });
 
+    if( ! isMulti ) {
+        newOptions.unshift({
+            label: 'All',
+            value: ''
+        });
+    }
+
     return (
         <Select
             value={newSelected}
-            isMulti
+            isMulti={isMulti}
             options={newOptions}
             onChange={optionSelected => {
                 // Convert it back to array of ids.
-                setSelected( optionSelected.map( option => {
+                setSelected( isMulti ? optionSelected.map( option => {
                     return option.value;
-                }));
+                }) : optionSelected.value);
             }}
         />
     );

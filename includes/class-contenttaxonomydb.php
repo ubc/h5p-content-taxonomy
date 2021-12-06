@@ -96,7 +96,7 @@ class ContentTaxonomyDB {
 	 * @param array  $filters Must be defined like so: array(array('field', 'Cool Content', 'LIKE')).
 	 * @return array query results.
 	 */
-	public static function get_contents( $context = 'self', $sortby = 0, $reverse_order = false, $limit = null, $offset = null, $search = null ) {
+	public static function get_contents( $context = 'self', $sortby = 0, $reverse_order = false, $limit = null, $offset = null, $search = null, $term_ids = array() ) {
 		if ( ! class_exists( 'H5PContentQuery' ) ) {
 			return array();
 		}
@@ -130,10 +130,19 @@ class ContentTaxonomyDB {
 		$sortby_query     = ' ORDER BY ' . $order_by_array[ $sortby ] . ( $reverse_order ? ' ASC' : ' DESC' );
 		$pagination_query = ' LIMIT ' . ( $offset ? $offset : '0' ) . ' ,' . ( $limit ? $limit : '20' );
 
-		$content_query        = $base_select . $base_query . $context_query . $search_query . $groupby_query . $sortby_query . $pagination_query;
+		$terms_condition = '';
+		if ( 1 === count( $term_ids ) ) {
+			$terms_condition = 'SELECT content_id FROM ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id = ' . $term_ids[0];
+		} elseif ( 2 === count( $term_ids ) ) {
+			$terms_condition = 'SELECT content_id FROM ((SELECT content_id FROM ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id = ' . $term_ids[0] . ') ctt0 INNER JOIN (SELECT content_id as secondary FROM ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id = ' . $term_ids[1] . ') ctt1 ON ctt0.content_id = ctt1.secondary)';
+		}
+
+		$term_query = empty( $term_ids ) ? '' : ' INNER JOIN (' . $terms_condition . ') ct3 ON ct3.content_id = hc.id';
+
+		$content_query        = $base_select . $base_query . $term_query . $context_query . $search_query . $groupby_query . $sortby_query . $pagination_query;
 		$content_query_result = $wpdb->get_results( $content_query );
 
-		$count_query        = $base_count . $base_query . $context_query . $search_query . $groupby_query . $sortby_query;
+		$count_query        = $base_count . $base_query . $term_query . $context_query . $search_query . $groupby_query . $sortby_query;
 		$count_query_result = $wpdb->get_results( $count_query );
 
 		// Retrieve faculty information for the contents.
@@ -267,4 +276,5 @@ class ContentTaxonomyDB {
 			$result
 		);
 	}//end get_content_terms_by_taxonomy()
+
 }

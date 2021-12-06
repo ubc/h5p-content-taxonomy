@@ -24,14 +24,14 @@ export default ( props ) => {
             <MetaBoxWrap label="Faculty">
                 <Faculty
                     facultySelected={ facultySelected }
-                    setFacultySelected = { setFacultySelected }
+                    setFacultySelected={ setFacultySelected }
                 />
             </MetaBoxWrap>
 
             <MetaBoxWrap label="Discipline">
                 <Discipline
                     disciplineSelected={ disciplineSelected }
-                    setDisciplineSelected = { setDisciplineSelected }
+                    setDisciplineSelected={ setDisciplineSelected }
                 />
             </MetaBoxWrap>
             <input

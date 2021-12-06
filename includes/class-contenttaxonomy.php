@@ -231,13 +231,15 @@ class ContentTaxonomy {
 
 		wp_localize_script(
 			'ubc-h5p-taxonomy-listing-view-js',
-			'h5p_listing_view_obj',
+			'ubc_h5p_admin',
 			array(
 				'user_faculty'           => $user_faculty ? $user_faculty : array(),
 				'user_name'              => wp_get_current_user()->user_login,
 				'admin_url'              => admin_url(),
 				'can_user_editor_others' => current_user_can( 'edit_others_h5p_contents' ),
 				'security_nonce'         => wp_create_nonce( 'security' ),
+				'faculties_list'         => Helper::get_taxonomy_hierarchy( 'ubc_h5p_content_faculty' ),
+				'disciplines_list'       => Helper::get_taxonomy_hierarchy( 'ubc_h5p_content_discipline' ),
 			)
 		);
 
@@ -354,6 +356,7 @@ class ContentTaxonomy {
 		$limit   = isset( $_POST['limit'] ) ? sanitize_text_field( wp_unslash( $_POST['limit'] ) ) : null;
 		$offset  = isset( $_POST['offset'] ) ? sanitize_text_field( wp_unslash( $_POST['offset'] ) ) : null;
 		$search  = isset( $_POST['search'] ) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : null;
+		$terms  = isset( $_POST['terms'] ) ? json_decode($_POST['terms']) : array();
 
 		// Nothing is changed for administrator or network administrator.
 		if ( current_user_can( 'manage_options' ) ) {
@@ -362,7 +365,7 @@ class ContentTaxonomy {
 
 		// If user has editor role. Then they should be able to see their own contents + contents within their assigned faculty.
 		if ( current_user_can( 'edit_others_h5p_contents' ) ) {
-			$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $revert, $limit, $offset, $search );
+			$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $revert, $limit, $offset, $search, $terms );
 			wp_send_json_success( $contents );
 		}
 
@@ -371,7 +374,7 @@ class ContentTaxonomy {
 			wp_send_json_success( array() );
 		}
 
-		$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $revert, $limit, $offset, $search );
+		$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $revert, $limit, $offset, $search, $terms );
 		wp_send_json_success( $contents );
 	}//end list_contents()
 }

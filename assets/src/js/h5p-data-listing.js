@@ -1,4 +1,6 @@
 import React, {useState, useEffect, Fragment} from 'react';
+import Faculty from './h5p-new-taxonomy-faculty';
+import Discipline from './h5p-new-taxonomy-discipline';
 
 export default ( props ) => {
 
@@ -8,6 +10,8 @@ export default ( props ) => {
     const [revert, setRevert] = useState(false);
     const [countTotal, setCountTotal] = useState(0);
     const [search, setSearch] = useState('');
+    const [facultySelected, setFacultySelected] = useState('');
+    const [disciplineSelected, setDisciplineSelected] = useState('');
     const limit = 20;
 
     const tabOptions = [
@@ -24,7 +28,7 @@ export default ( props ) => {
 
     useEffect(() => {
         doFetch();
-    }, [ currentTab, offset, sort, revert ]);
+    }, [ currentTab, offset, sort, revert, facultySelected, disciplineSelected ]);
 
     const doFetch = () => {
         async function fetch() {
@@ -52,6 +56,13 @@ export default ( props ) => {
 
     const fetchFromAPI = async () => {
         let formData = new FormData();
+        let terms = [];
+        if( facultySelected ) {
+            terms.push(facultySelected);
+        }
+        if( disciplineSelected ) {
+            terms.push(disciplineSelected);
+        }
 
         formData.append( 'action', 'ubc_h5p_list_contents' );
         formData.append( 'offset', offset );
@@ -60,7 +71,8 @@ export default ( props ) => {
         formData.append( 'revert', revert );
         formData.append( 'search', search );
         formData.append( 'context', tabOptions[currentTab].slug );
-        formData.append( 'nonce', h5p_listing_view_obj.security_nonce );
+        formData.append( 'nonce', ubc_h5p_admin.security_nonce );
+        formData.append( 'terms', JSON.stringify(terms));
 
         let response = await fetch(ajaxurl, {
             method: 'POST',
@@ -93,7 +105,7 @@ export default ( props ) => {
 
     return (
         <Fragment>
-            { ! h5p_listing_view_obj.can_user_editor_others ? null : <div className="h5p-button-groups">
+            { ! ubc_h5p_admin.can_user_editor_others ? null : <div className="h5p-button-groups">
                 { tabOptions.map( (tab, index) => {
                     return  <button
                             className={`${currentTab === index ? 'active' : ''}`}
@@ -108,7 +120,7 @@ export default ( props ) => {
                         </button>
                 }) }
             </div> }
-            <div>
+            <div id="h5p-filters">
                 <input
                     type="text"
                     id="search"
@@ -122,6 +134,16 @@ export default ( props ) => {
                         setSearch(e.target.value);
                     }}
                     value={search}
+                />
+                <Faculty
+                    facultySelected={ facultySelected }
+                    setFacultySelected={ setFacultySelected }
+                    isMulti={false}
+                />
+                <Discipline
+                    disciplineSelected={ disciplineSelected }
+                    setDisciplineSelected={ setDisciplineSelected }
+                    isMulti={false}
                 />
             </div>
             { data ? <table className="wp-list-table widefat fixed" style={{ marginTop: '20px' }}>
@@ -194,13 +216,13 @@ export default ( props ) => {
 
                     return (
                         <tr key={ index }>
-                            <td><a href={`${h5p_listing_view_obj.admin_url}admin.php?page=h5p_new&id=${entry.id}`}>{ entry.title }</a></td>
+                            <td><a href={`${ubc_h5p_admin.admin_url}admin.php?page=h5p_new&id=${entry.id}`}>{ entry.title }</a></td>
                             <td>{ entry.content_type }</td>
                             <td>{ entry.user_name }</td>
                             <td>{ faculties.join(',') }</td>
                             <td>{ formattedTags }</td>
                             <td>{ entry.updated_at }</td>
-                            <td><a href={`${h5p_listing_view_obj.admin_url}admin.php?page=h5p&task=results&id=${entry.id}`}>Results</a></td>
+                            <td><a href={`${ubc_h5p_admin.admin_url}admin.php?page=h5p&task=results&id=${entry.id}`}>Results</a></td>
                         </tr>
                     );
                 }) }
