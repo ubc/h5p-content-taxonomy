@@ -37,6 +37,7 @@ function init() {
 
 	require_once 'includes/class-helper.php';
 	require_once 'includes/class-contenttaxonomy.php';
+	require_once 'includes/class-contenttaxonomyexport.php';
 }
 
 add_action( 'plugin_loaded', __NAMESPACE__ . '\\init' );

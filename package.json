@@ -20,6 +20,7 @@
     "react-dom": "^16.14.0",
     "react-pose": "^4.0.10",
     "react-select": "^5.1.0",
+    "react-tabs": "^3.2.3",
     "recompose": "^0.30.0",
     "sass-loader": "^7.1.0",
     "script-loader": "^0.7.2",

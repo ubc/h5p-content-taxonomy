@@ -13,6 +13,7 @@ module.exports = function( env, argv ) {
       'h5p-new': './app/h5p-new.js',
       'h5p-profile': './app/h5p-profile.js',
       'h5p-listing-view': './app/h5p-listing-view.js',
+      'h5p-export': './app/h5p-export.js',
     },
     output: {
       path: path.join( __dirname, 'assets/dist/js' ),
