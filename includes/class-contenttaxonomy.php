@@ -34,7 +34,7 @@ class ContentTaxonomy {
 
 		add_action( 'admin_init', array( $this, 'check_user_faculty' ) );
 		add_action( 'wp_ajax_ubc_h5p_list_contents', array( $this, 'list_contents' ) );
-		add_filter( 'wp_redirect', array( $this, 'save_h5p_content_taxonomy_on_creation' ) );
+		add_filter( 'wp_redirect', array( $this, 'h5p_content_taxonomy_actions' ) );
 	}
 
 	/**
@@ -240,6 +240,7 @@ class ContentTaxonomy {
 				'security_nonce'         => wp_create_nonce( 'security' ),
 				'faculties_list'         => Helper::get_taxonomy_hierarchy( 'ubc_h5p_content_faculty' ),
 				'disciplines_list'       => Helper::get_taxonomy_hierarchy( 'ubc_h5p_content_discipline' ),
+				'tag_list'               => ContentTaxonomyDB::get_content_tags(),
 			)
 		);
 
@@ -253,24 +254,30 @@ class ContentTaxonomy {
 	}//end enqueue_listing_view_script()
 
 	/**
-	 * Callback to save taxonomy information after H5P content is created.
+	 * Callback to save taxonomy information after H5P content is created. Delete taxonomy rows when content is deleted.
 	 * Not ideal to use wp_redirect filter since WordPress filter is suppose to change stuff not add stuff.
 	 * However, due to cusotmization limitation from H5P plugin, this is currently the only way to make it work.
 	 *
 	 * @param string $location the URL to redirect user to.
 	 * @return string $location the URL to redirect user to.
 	 */
-	public function save_h5p_content_taxonomy_on_creation( $location ) {
+	public function h5p_content_taxonomy_actions( $location ) {
 		$url_components = wp_parse_url( $location );
 		parse_str( $url_components['query'], $params );
 
-		if ( isset( $params['id'] ) && isset( $_REQUEST['ubc-h5p-content-taxonomy'] ) ) {
+		// Save taxonomies when creating new h5p content.
+		if ( isset( $_GET['page'] ) && 'h5p_new' === $_GET['page'] && isset( $params['id'] ) && isset( $_REQUEST['ubc-h5p-content-taxonomy'] ) ) {
 			// phpcs:ignore
 			$this->save_taxonomy( intval( $params['id'] ), $_REQUEST['ubc-h5p-content-taxonomy'] );
 		}
 
+		// Deleting taxonomies when deleting h5p content.
+		if ( isset( $_GET['id'] ) && isset( $_GET['page'] ) && 'h5p_new' === $_GET['page'] && isset( $_GET['delete'] ) ) {
+			$this->delete_taxonomy( intval( $_GET['id'] ) );
+		}
+
 		return $location;
-	}//end save_h5p_content_taxonomy_on_creation()
+	}//end h5p_content_taxonomy_actions()
 
 	/**
 	 * Parse the JSON string of the taxonomy information and save them into the database.
@@ -303,6 +310,10 @@ class ContentTaxonomy {
 			}
 		}
 	}//end save_taxonomy()
+
+	private function delete_taxonomy( $id ) {
+		ContentTaxonomyDB::clear_content_terms( $id );
+	}
 
 	/**
 	 * Load assets for h5p new content page.
@@ -356,7 +367,8 @@ class ContentTaxonomy {
 		$limit   = isset( $_POST['limit'] ) ? sanitize_text_field( wp_unslash( $_POST['limit'] ) ) : null;
 		$offset  = isset( $_POST['offset'] ) ? sanitize_text_field( wp_unslash( $_POST['offset'] ) ) : null;
 		$search  = isset( $_POST['search'] ) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : null;
-		$terms   = isset( $_POST['terms'] ) ? json_decode($_POST['terms']) : array();
+		$terms   = isset( $_POST['terms'] ) ? json_decode( html_entity_decode( stripslashes( $_POST['terms'] ) ) ) : array();
+		$tags    = isset( $_POST['tags'] ) ? json_decode( html_entity_decode( stripslashes( $_POST['tags'] ) ) ) : array();
 
 		// Nothing is changed for administrator or network administrator.
 		if ( current_user_can( 'manage_options' ) ) {
@@ -365,7 +377,7 @@ class ContentTaxonomy {
 
 		// If user has editor role. Then they should be able to see their own contents + contents within their assigned faculty.
 		if ( current_user_can( 'edit_others_h5p_contents' ) ) {
-			$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $revert, $limit, $offset, $search, $terms );
+			$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $revert, $limit, $offset, $search, $terms, $tags );
 			wp_send_json_success( $contents );
 		}
 
@@ -374,7 +386,7 @@ class ContentTaxonomy {
 			wp_send_json_success( array() );
 		}
 
-		$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $revert, $limit, $offset, $search, $terms );
+		$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $revert, $limit, $offset, $search, $terms, $tags );
 		wp_send_json_success( $contents );
 	}//end list_contents()
 }

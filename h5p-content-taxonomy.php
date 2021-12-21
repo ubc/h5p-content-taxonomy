@@ -23,6 +23,7 @@ namespace UBC\H5P\Taxonomy;
 define( 'H5P_TAXONOMY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'H5P_TAXONOMY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
+require_once 'includes/class-helper.php';
 require_once 'includes/class-contenttaxonomydb.php';
 
 /**

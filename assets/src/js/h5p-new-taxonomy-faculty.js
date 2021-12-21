@@ -8,6 +8,7 @@ export default props => {
         <Select
             selected={ facultySelected }
             options={ faculty_list }
+            placeholder="Select Faculty..."
             setSelected={ setFacultySelected }
             name="ubc-h5p-content-faculty"
             isMulti={ isMulti }

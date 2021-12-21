@@ -159,6 +159,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
     selected: disciplineSelected,
     options: displine_list,
+    placeholder: "Select Discipline...",
     setSelected: setDisciplineSelected,
     name: "ubc-h5p-content-discipline",
     isMulti: isMulti,
@@ -198,6 +199,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
     selected: facultySelected,
     options: faculty_list,
+    placeholder: "Select Faculty...",
     setSelected: setFacultySelected,
     name: "ubc-h5p-content-faculty",
     isMulti: isMulti,
@@ -416,6 +418,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     value: newSelected,
     isMulti: isMulti,
     options: newOptions,
+    placeholder: props.placeholder,
     onChange: optionSelected => {
       // Convert it back to array of ids.
       setSelected(isMulti ? optionSelected.map(option => {

@@ -19,7 +19,7 @@ class ContentTaxonomyDB {
 	 * @since    1.0.0
 	 * @var      $db_version
 	 */
-	private static $db_version = '0.1.3';
+	private static $db_version = '0.2.2';
 
 	/**
 	 * Create database table when plugin activates.
@@ -38,14 +38,13 @@ class ContentTaxonomyDB {
 		// Get charset to use.
 		$charset = self::determine_charset();
 
-		dbDelta(
+		$test = dbDelta(
 			"CREATE TABLE {$wpdb->prefix}h5p_contents_taxonomy (
 			id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			content_id INT UNSIGNED NOT NULL,
 			term_id INT UNSIGNED NOT NULL,
 			taxonomy VARCHAR(255) NOT NULL,
-			PRIMARY KEY  (id),
-			CONSTRAINT unique_content_term UNIQUE (content_id, term_id)
+			PRIMARY KEY  (id)
 		  ) {$charset};"
 		);
 
@@ -97,7 +96,7 @@ class ContentTaxonomyDB {
 	 * @param bool   $term_ids term ids to filter the result by. Only expect at most two terms to be searched.
 	 * @return array query results.
 	 */
-	public static function get_contents( $context = 'self', $sortby = 0, $reverse_order = false, $limit = null, $offset = null, $search = null, $term_ids = array() ) {
+	public static function get_contents( $context = 'self', $sortby = 0, $reverse_order = false, $limit = null, $offset = null, $search = null, $term_ids = array(), $tags = array() ) {
 		if ( ! class_exists( 'H5PContentQuery' ) ) {
 			return array();
 		}
@@ -112,8 +111,7 @@ class ContentTaxonomyDB {
 
 		global $wpdb;
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		$user_faculty             = get_user_meta( get_current_user_id(), 'user_faculty', true );
-		$user_faculty_content_ids = self::get_content_ids_by_faculty( $user_faculty );
+		$user_faculty_ids = get_user_meta( get_current_user_id(), 'user_faculty', true );
 
 		$base_select = "SELECT hc.title AS title, hl.title AS content_type, u.display_name AS user_name, GROUP_CONCAT(DISTINCT t.name SEPARATOR ';') AS tags, hc.updated_at AS updated_at, hc.id AS id, u.ID AS user_id, hl.name AS content_type_id";
 		$base_count  = 'SELECT COUNT(*)';
@@ -123,10 +121,30 @@ class ContentTaxonomyDB {
 			LEFT JOIN ' . $wpdb->prefix . 'users u ON hc.user_id = u.ID 
 			LEFT JOIN ' . $wpdb->prefix . 'h5p_contents_tags ct ON ct.content_id = hc.id
 			LEFT JOIN ' . $wpdb->prefix . 'h5p_tags t ON ct.tag_id = t.id
-			LEFT JOIN ' . $wpdb->prefix . 'h5p_contents_tags ct2 ON ct2.content_id = hc.id';
+			LEFT JOIN ' . $wpdb->prefix . 'h5p_contents_taxonomy ct2 ON ct2.content_id = hc.id';
 
-		$groupby_query    = ' GROUP BY hc.id';
-		$context_query    = 'self' === $context ? " WHERE u.ID = '" . get_current_user_id() . "'" : ' WHERE hc.id IN (' . implode( ',', $user_faculty_content_ids ) . ') AND u.ID != ' . get_current_user_id();
+		$groupby_query = ' GROUP BY hc.id';
+
+		// Where clause for main query.
+
+		$where_array = array();
+		// Based on the context whether the query is for user only, or for faculty.
+		array_push( $where_array, 'self' === $context ? "u.ID = '" . get_current_user_id() . "'" : 'hc.id IN (SELECT DISTINCT content_id from ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id IN (' . implode( ',', $user_faculty_ids ) . ')) AND u.ID != ' . get_current_user_id() );
+
+		// Filter content based on tags selected.
+		if ( ! empty( $tags ) ) {
+			$tag_ids = array_map(
+				function( $tag ) {
+					return $tag->value;
+				},
+				$tags,
+			);
+			array_push( $where_array, 't.id in (' . implode( ',', $tag_ids ) . ')' );
+		}
+
+		$where = ' WHERE ' . implode( ' AND ', $where_array );
+		// End where clause for main query.
+
 		$search_query     = empty( $search ) ? '' : " AND ( hc.title LIKE '%" . $search . "%' OR u.display_name LIKE '%" . $search . "%' )";
 		$sortby_query     = ' ORDER BY ' . $order_by_array[ $sortby ] . ( $reverse_order ? ' ASC' : ' DESC' );
 		$pagination_query = ' LIMIT ' . ( $offset ? $offset : '0' ) . ' ,' . ( $limit ? $limit : '20' );
@@ -140,11 +158,13 @@ class ContentTaxonomyDB {
 
 		$term_query = empty( $term_ids ) ? '' : ' INNER JOIN (' . $terms_condition . ') ct3 ON ct3.content_id = hc.id';
 
-		$content_query        = $base_select . $base_query . $term_query . $context_query . $search_query . $groupby_query . $sortby_query . $pagination_query;
+		$content_query        = $base_select . $base_query . $term_query . $where . $search_query . $groupby_query . $sortby_query . $pagination_query;
 		$content_query_result = $wpdb->get_results( $content_query );
 
-		$count_query        = $base_count . $base_query . $term_query . $context_query . $search_query . $groupby_query . $sortby_query;
+		$count_query        = $base_count . $base_query . $term_query . $where . $search_query . $groupby_query . $sortby_query;
 		$count_query_result = $wpdb->get_results( $count_query );
+
+		Helper::write_log($content_query);
 
 		// Retrieve faculty information for the contents.
 		$data = array_map(
@@ -173,6 +193,16 @@ class ContentTaxonomyDB {
 			'num'  => count( $count_query_result ),
 		);
 	}//end get_contents()
+
+	public static function get_content_tags() {
+		global $wpdb;
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+		$query  = 'SELECT * FROM ' . $wpdb->prefix . 'h5p_tags';
+		$result = $wpdb->get_results( $query );
+
+		return $result;
+	}
 
 	/**
 	 * Based on faculty ids, get associated content IDs.
@@ -216,17 +246,42 @@ class ContentTaxonomyDB {
 		global $wpdb;
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
+		// Make sure content_id + term_id is unique combination in database. Since dbdelta lack of multi-index support. Have to do this manually.
 		$results = $wpdb->query(
 			$wpdb->prepare(
-				"INSERT into {$wpdb->prefix}h5p_contents_taxonomy (content_id, term_id, taxonomy)
-				VALUES (%d, %d, %s)
-				ON DUPLICATE KEY UPDATE taxonomy = %s",
+				"SELECT * FROM {$wpdb->prefix}h5p_contents_taxonomy
+				WHERE content_id = %d AND term_id = %d",
 				$content_id,
-				$term_id,
-				$taxonomy,
-				$taxonomy
+				$term_id
 			)
 		);
+
+		// If combination found, update it.
+		if ( 0 !== $results ) {
+			$results = $wpdb->query(
+				$wpdb->prepare(
+					"UPDATE {$wpdb->prefix}h5p_contents_taxonomy
+					SET taxonomy = %s
+					WHERE content_id = %d AND term_id = %d",
+					$taxonomy,
+					$content_id,
+					$term_id
+				)
+			);
+		} else {
+			// if not found, create it.
+			$results = $wpdb->query(
+				$wpdb->prepare(
+					"INSERT into {$wpdb->prefix}h5p_contents_taxonomy (content_id, term_id, taxonomy)
+					VALUES (%d, %d, %s)
+					ON DUPLICATE KEY UPDATE taxonomy = %s",
+					$content_id,
+					$term_id,
+					$taxonomy,
+					$taxonomy
+				)
+			);
+		}
 	}//end insert_content_term()
 
 	/**

@@ -14,11 +14,19 @@
 #h5p-filters {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: 200px 1fr 1fr;
-  margin-top: 20px; }
+  margin-top: 20px;
+  grid-template-areas: "search faculty faculty discipline discipline" "tags tags tags tags tags"; }
+  #h5p-filters > input:first-child {
+    grid-area: search; }
+  #h5p-filters > div:nth-child(2) {
+    grid-area: faculty; }
+  #h5p-filters > div:nth-child(3) {
+    grid-area: discipline; }
+  #h5p-filters > div:last-child {
+    grid-area: tags; }
   @media only screen and (max-width: 600px) {
     #h5p-filters {
-      grid-template-columns: 1fr; } }
+      grid-template-areas: "search" "faculty" "discipline" "tags"; } }
 
 #h5p-contents table {
   table-layout: auto; }

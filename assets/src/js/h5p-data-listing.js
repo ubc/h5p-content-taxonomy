@@ -1,6 +1,7 @@
 import React, {useState, useEffect, Fragment} from 'react';
 import Faculty from './h5p-new-taxonomy-faculty';
 import Discipline from './h5p-new-taxonomy-discipline';
+import Select from 'react-select';
 
 export default ( props ) => {
 
@@ -12,6 +13,7 @@ export default ( props ) => {
     const [search, setSearch] = useState('');
     const [facultySelected, setFacultySelected] = useState('');
     const [disciplineSelected, setDisciplineSelected] = useState('');
+    const [tagSelected, setTagSelected] = useState(null);
     const limit = 20;
 
     const tabOptions = [
@@ -28,7 +30,7 @@ export default ( props ) => {
 
     useEffect(() => {
         doFetch();
-    }, [ currentTab, offset, sort, revert, facultySelected, disciplineSelected ]);
+    }, [ currentTab, offset, sort, revert, facultySelected, disciplineSelected, tagSelected ]);
 
     const doFetch = () => {
         async function fetch() {
@@ -70,6 +72,7 @@ export default ( props ) => {
         formData.append( 'sortBy', sort );
         formData.append( 'revert', revert );
         formData.append( 'search', search );
+        formData.append( 'tags', JSON.stringify(tagSelected) )
         formData.append( 'context', tabOptions[currentTab].slug );
         formData.append( 'nonce', ubc_h5p_admin.security_nonce );
         formData.append( 'terms', JSON.stringify(terms));
@@ -144,6 +147,20 @@ export default ( props ) => {
                     disciplineSelected={ disciplineSelected }
                     setDisciplineSelected={ setDisciplineSelected }
                     isMulti={false}
+                />
+                <Select
+                    value={tagSelected}
+                    placeholder='Select Tags...'
+                    isMulti
+                    options={ ubc_h5p_admin.tag_list.map( tag => {
+                        return {
+                            value: tag.id,
+                            label: tag.name
+                        };
+                    }) }
+                    onChange={optionSelected => {
+                        setTagSelected( optionSelected );
+                    }}
                 />
             </div>
             { data ? <table className="wp-list-table widefat fixed" style={{ marginTop: '20px' }}>

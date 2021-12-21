@@ -41,6 +41,7 @@ export default props => {
             value={newSelected}
             isMulti={isMulti}
             options={newOptions}
+            placeholder={props.placeholder}
             onChange={optionSelected => {
                 // Convert it back to array of ids.
                 setSelected( isMulti ? optionSelected.map( option => {
