@@ -11,7 +11,7 @@
  * Plugin Name: UBC H5P Addon - Taxonomy
  * Plugin URI:  https://ubc.ca/
  * Description: Add pre-defined taxonomies as dropdown for h5p content.
- * Version:     1.0.2
+ * Version:     1.0.3
  * Author:      Kelvin Xu
  * Text Domain: ubc-h5p-taxonomy
  * License:     GPL v2 or later
