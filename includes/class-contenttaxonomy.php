@@ -171,6 +171,10 @@ class ContentTaxonomy {
 	public function check_user_faculty() {
 		global $pagenow;
 
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+
 		$user_faculty = get_user_meta( get_current_user_id(), 'user_faculty', true );
 
 		if ( current_user_can( 'manage_options' ) ) {
