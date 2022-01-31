@@ -1,5 +1,6 @@
 import React from 'react';
-import Select from 'react-select';
+import ReactSelect, { createFilter } from 'react-select';
+import CustomOption from './select2-option';
 
 export default props => {
     const { selected, options, setSelected, isMulti=true } = props;
@@ -37,11 +38,14 @@ export default props => {
     }
 
     return (
-        <Select
+        <ReactSelect
             value={newSelected}
             isMulti={isMulti}
             options={newOptions}
             placeholder={props.placeholder}
+            classNamePrefix="custom-select"
+            components={{ Option: CustomOption }}
+            filterOption={createFilter({ ignoreAccents: false })}
             onChange={optionSelected => {
                 // Convert it back to array of ids.
                 setSelected( isMulti ? optionSelected.map( option => {

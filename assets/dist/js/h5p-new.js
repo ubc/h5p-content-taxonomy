@@ -360,6 +360,68 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
 
 /***/ }),
 
+/***/ "./assets/src/js/select2-option.js":
+/*!*****************************************!*\
+  !*** ./assets/src/js/select2-option.js ***!
+  \*****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
+var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/plugins/ubc-h5p-addon-taxonomy/assets/src/js/select2-option.js";
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
+
+
+
+const CustomOption = (_ref) => {
+  let {
+    children
+  } = _ref,
+      props = _objectWithoutProperties(_ref, ["children"]);
+
+  // eslint-disable-next-line no-unused-vars
+  const _props$innerProps = props.innerProps,
+        {
+    onMouseMove,
+    onMouseOver
+  } = _props$innerProps,
+        rest = _objectWithoutProperties(_props$innerProps, ["onMouseMove", "onMouseOver"]);
+
+  const newProps = _objectSpread(_objectSpread({}, props), {}, {
+    innerProps: rest
+  });
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_select__WEBPACK_IMPORTED_MODULE_1__["components"].Option, _extends({}, newProps, {
+    className: "custom-option",
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 9,
+      columnNumber: 5
+    }
+  }), children);
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (CustomOption);
+
+/***/ }),
+
 /***/ "./assets/src/js/select2.js":
 /*!**********************************!*\
   !*** ./assets/src/js/select2.js ***!
@@ -372,7 +434,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
+/* harmony import */ var _select2_option__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./select2-option */ "./assets/src/js/select2-option.js");
 var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/plugins/ubc-h5p-addon-taxonomy/assets/src/js/select2.js";
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = (props => {
@@ -419,6 +483,13 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     isMulti: isMulti,
     options: newOptions,
     placeholder: props.placeholder,
+    classNamePrefix: "custom-select",
+    components: {
+      Option: _select2_option__WEBPACK_IMPORTED_MODULE_2__["default"]
+    },
+    filterOption: Object(react_select__WEBPACK_IMPORTED_MODULE_1__["createFilter"])({
+      ignoreAccents: false
+    }),
     onChange: optionSelected => {
       // Convert it back to array of ids.
       setSelected(isMulti ? optionSelected.map(option => {
@@ -428,7 +499,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 40,
+      lineNumber: 41,
       columnNumber: 9
     }
   });
