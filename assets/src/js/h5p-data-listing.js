@@ -106,7 +106,7 @@ export default ( props ) => {
         }
     }
 
-    return (
+    return data ? (
         <Fragment>
             { ! ubc_h5p_admin.can_user_editor_others ? null : <div className="h5p-button-groups">
                 { tabOptions.map( (tab, index) => {
@@ -163,7 +163,7 @@ export default ( props ) => {
                     }}
                 />
             </div>
-            { data ? <table className="wp-list-table widefat fixed" style={{ marginTop: '20px' }}>
+            <table className="wp-list-table widefat fixed" style={{ marginTop: '20px' }}>
                 <thead>
                     <tr>
                         <th
@@ -244,7 +244,7 @@ export default ( props ) => {
                     );
                 }) }
                 </tbody>
-            </table> : null }
+            </table>
         </Fragment>
-    );
+    ) : null;
 }
