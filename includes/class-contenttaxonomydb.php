@@ -164,8 +164,6 @@ class ContentTaxonomyDB {
 		$count_query        = $base_count . $base_query . $term_query . $where . $search_query . $groupby_query . $sortby_query;
 		$count_query_result = $wpdb->get_results( $count_query );
 
-		Helper::write_log($content_query);
-
 		// Retrieve faculty information for the contents.
 		$data = array_map(
 			function( $content ) {
