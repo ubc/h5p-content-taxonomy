@@ -20,7 +20,7 @@ class ContentTaxonomy {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'create_post_type_and_taxonomies' ) );
-		add_action( 'admin_menu', array( $this, 'create_taxonomy_menus' ), 99 );
+		add_action( 'admin_menu', array( $this, 'create_taxonomy_menus' ), 50 );
 
 		add_action( 'show_user_profile', array( $this, 'additional_user_meta_field' ) );
 		add_action( 'edit_user_profile', array( $this, 'additional_user_meta_field' ) );
@@ -273,11 +273,13 @@ class ContentTaxonomy {
 		if ( isset( $_GET['page'] ) && 'h5p_new' === $_GET['page'] && isset( $params['id'] ) && isset( $_REQUEST['ubc-h5p-content-taxonomy'] ) ) {
 			// phpcs:ignore
 			$this->save_taxonomy( intval( $params['id'] ), $_REQUEST['ubc-h5p-content-taxonomy'] );
+			do_action( 'ubc_h5p_content_taxonomy_save_content', intval( $params['id'] ) );
 		}
 
 		// Deleting taxonomies when deleting h5p content.
 		if ( isset( $_GET['id'] ) && isset( $_GET['page'] ) && 'h5p_new' === $_GET['page'] && isset( $_GET['delete'] ) ) {
 			$this->delete_taxonomy( intval( $_GET['id'] ) );
+			do_action( 'ubc_h5p_content_taxonomy_delete_content' );
 		}
 
 		return $location;

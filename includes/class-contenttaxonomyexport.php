@@ -20,7 +20,7 @@ class ContentTaxonomyExport {
 	 */
 	public function __construct() {
 		add_action( 'admin_init', array( $this, 'initial_output_buffer' ) );
-		add_action( 'admin_menu', array( $this, 'create_taxonomy_menus' ), 99 );
+		add_action( 'admin_menu', array( $this, 'create_taxonomy_menus' ), 60 );
 		add_action( 'h5p_export_actions', array( $this, 'enqueue_scripts' ) );
 
 		add_action( 'h5p_export_actions', array( $this, 'import_export_taxonomy_actions' ) );

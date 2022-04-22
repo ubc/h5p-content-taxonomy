@@ -16,7 +16,7 @@ export default ( props ) => {
     const [tagSelected, setTagSelected] = useState(null);
     const limit = 20;
 
-    const tabOptions = [
+    const tabOptions = wp.hooks.applyFilters('h5p-listing-view-additional-tab', [
         {
             label: 'My H5P content',
             slug: 'self'
@@ -25,7 +25,7 @@ export default ( props ) => {
             label: 'My faculty H5P content',
             slug: 'faculty'
         }
-    ];
+    ]);
     const [currentTab, setCurrentTab] = useState(0);
 
     useEffect(() => {
@@ -76,6 +76,8 @@ export default ( props ) => {
         formData.append( 'context', tabOptions[currentTab].slug );
         formData.append( 'nonce', ubc_h5p_admin.security_nonce );
         formData.append( 'terms', JSON.stringify(terms));
+
+        formData = wp.hooks.applyFilters('h5p-listing-view-additional-form-data', formData);
 
         let response = await fetch(ajaxurl, {
             method: 'POST',

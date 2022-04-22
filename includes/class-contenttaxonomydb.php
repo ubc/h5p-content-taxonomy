@@ -85,6 +85,20 @@ class ContentTaxonomyDB {
 	}//end clear_content_terms()
 
 	/**
+	 * Remove all the rows in content taxonomy relation table based on content ID and term type.
+	 *
+	 * @param int $content_id ID of the content to remove.
+	 * @param int $term_type type of the term, faculty, discpline, group or etc.
+	 * @return void
+	 */
+	public static function clear_content_terms_by_type( $content_id, $term_type ) {
+		global $wpdb;
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+		$results = $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}h5p_contents_taxonomy WHERE content_id = %d and taxonomy = %s", $content_id, $term_type ) );
+	}//end clear_content_terms_by_type()
+
+	/**
 	 * List all the H5P contents based on query.
 	 *
 	 * @param string $context either the query is for user themselves or their faculties.
@@ -129,7 +143,8 @@ class ContentTaxonomyDB {
 
 		$where_array = array();
 		// Based on the context whether the query is for user only, or for faculty.
-		array_push( $where_array, 'self' === $context ? "u.ID = '" . get_current_user_id() . "'" : 'hc.id IN (SELECT DISTINCT content_id from ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id IN (' . implode( ',', $user_faculty_ids ) . ')) AND u.ID != ' . get_current_user_id() );
+		$context_query = apply_filters( 'h5p_content_taxonomy_context_query', 'self' === $context ? "u.ID = '" . get_current_user_id() . "'" : 'hc.id IN (SELECT DISTINCT content_id from ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id IN (' . implode( ',', $user_faculty_ids ) . ')) AND u.ID != ' . get_current_user_id(), $context );
+		array_push( $where_array, $context_query );
 
 		// Filter content based on tags selected.
 		if ( ! empty( $tags ) ) {
