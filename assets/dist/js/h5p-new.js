@@ -250,7 +250,9 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     isMulti: true,
     options: Object(_helper_js__WEBPACK_IMPORTED_MODULE_3__["format2levelTermsOptions"])(ubc_h5p_admin.faculties_list),
     placeholder: "Select Faculty...",
-    setSelected: setFacultySelected,
+    onChange: optionSelected => {
+      setFacultySelected(optionSelected);
+    },
     name: "ubc-h5p-content-faculty",
     __self: undefined,
     __source: {
@@ -263,7 +265,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 43,
+      lineNumber: 45,
       columnNumber: 13
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -271,12 +273,14 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     isMulti: true,
     options: Object(_helper_js__WEBPACK_IMPORTED_MODULE_3__["format2levelTermsOptions"])(ubc_h5p_admin.disciplines_list),
     placeholder: "Select Discipline...",
-    setSelected: setDisciplineSelected,
+    onChange: optionSelected => {
+      setDisciplineSelected(optionSelected);
+    },
     name: "ubc-h5p-content-discipline",
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 44,
+      lineNumber: 46,
       columnNumber: 17
     }
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
@@ -293,7 +297,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 53,
+      lineNumber: 57,
       columnNumber: 13
     }
   }));
@@ -437,7 +441,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
   const {
     selected,
     options,
-    setSelected,
+    onChange,
     placeholder,
     name,
     isMulti = true
@@ -455,7 +459,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
       ignoreAccents: false
     }),
     onChange: optionSelected => {
-      setSelected(optionSelected);
+      onChange(optionSelected);
     },
     __self: undefined,
     __source: {
