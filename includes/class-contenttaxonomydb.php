@@ -134,19 +134,15 @@ class ContentTaxonomyDB {
 			LEFT JOIN ' . $wpdb->prefix . 'h5p_libraries hl ON hl.id = hc.library_id 
 			LEFT JOIN ' . $wpdb->prefix . 'users u ON hc.user_id = u.ID 
 			LEFT JOIN ' . $wpdb->prefix . 'h5p_contents_tags ct ON ct.content_id = hc.id
-			LEFT JOIN ' . $wpdb->prefix . 'h5p_tags t ON ct.tag_id = t.id
-			LEFT JOIN ' . $wpdb->prefix . 'h5p_contents_taxonomy ct2 ON ct2.content_id = hc.id';
+			';
 
 		$groupby_query = ' GROUP BY hc.id';
 
-		// Where clause for main query.
-
-		$where_array = array();
-		// Based on the context whether the query is for user only, or for faculty.
-		$context_query = apply_filters( 'h5p_content_taxonomy_context_query', 'self' === $context ? "u.ID = '" . get_current_user_id() . "'" : 'hc.id IN (SELECT DISTINCT content_id from ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id IN (' . implode( ',', $user_faculty_ids ) . ')) AND u.ID != ' . get_current_user_id(), $context );
-		array_push( $where_array, $context_query );
+		/** Tag Query */
 
 		// Filter content based on tags selected.
+		$tag_query = '';
+
 		if ( ! empty( $tags ) ) {
 			$tag_ids = array_map(
 				function( $tag ) {
@@ -154,29 +150,35 @@ class ContentTaxonomyDB {
 				},
 				$tags,
 			);
-			array_push( $where_array, 't.id in (' . implode( ',', $tag_ids ) . ')' );
+
+			$tag_query = ' RIGHT JOIN (SELECT *  FROM ' . $wpdb->prefix . 'h5p_tags WHERE id in (' . implode( ',', $tag_ids ) . ') ) t ON ct.tag_id = t.id';
+		} else {
+			$tag_query = ' LEFT JOIN ' . $wpdb->prefix . 'h5p_tags t ON ct.tag_id = t.id';
 		}
+		/** End Tag Query */
 
-		$where = ' WHERE ' . implode( ' AND ', $where_array );
-		// End where clause for main query.
+		/** Term Query */
+		$term_ids = apply_filters( 'h5p_content_taxonomy_terms', $term_ids, $context );
 
+		if ( 0 < count( $term_ids ) ) {
+			$term_query = ' RIGHT JOIN (SELECT content_id FROM ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id IN (' . implode( ',', $term_ids ) . ') group by content_id having count(*)>=' . count( $term_ids ) . ') ctt on ctt.content_id = hc.id';
+		} else {
+			$term_query = '';
+		}
+		/** End Term Query */
+
+		// Based on the context whether the query is for user only, or for faculty.
+		$context_query    = apply_filters( 'h5p_content_taxonomy_context_query', 'self' === $context ? ' WHERE u.ID = ' . get_current_user_id() : ' WHERE hc.id IN (SELECT DISTINCT content_id from ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id IN (' . implode( ',', $user_faculty_ids ) . ')) AND u.ID != ' . get_current_user_id(), $context );
 		$search_query     = empty( $search ) ? '' : " AND ( hc.title LIKE '%" . $search . "%' OR u.display_name LIKE '%" . $search . "%' )";
 		$sortby_query     = ' ORDER BY ' . $order_by_array[ $sortby ] . ( $reverse_order ? ' ASC' : ' DESC' );
 		$pagination_query = ' LIMIT ' . ( $offset ? $offset : '0' ) . ' ,' . ( $limit ? $limit : '20' );
 
-		$terms_condition = '';
-		if ( 1 === count( $term_ids ) ) {
-			$terms_condition = 'SELECT content_id FROM ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id = ' . $term_ids[0];
-		} elseif ( 2 === count( $term_ids ) ) {
-			$terms_condition = 'SELECT content_id FROM ((SELECT content_id FROM ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id = ' . $term_ids[0] . ') ctt0 INNER JOIN (SELECT content_id as secondary FROM ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id = ' . $term_ids[1] . ') ctt1 ON ctt0.content_id = ctt1.secondary)';
-		}
-
-		$term_query = empty( $term_ids ) ? '' : ' INNER JOIN (' . $terms_condition . ') ct3 ON ct3.content_id = hc.id';
-
-		$content_query        = $base_select . $base_query . $term_query . $where . $search_query . $groupby_query . $sortby_query . $pagination_query;
+		$content_query        = $base_select . $base_query . $tag_query . $term_query . $context_query . $search_query . $groupby_query . $sortby_query . $pagination_query;
 		$content_query_result = $wpdb->get_results( $content_query );
 
-		$count_query        = $base_count . $base_query . $term_query . $where . $search_query . $groupby_query . $sortby_query;
+		//Helper::write_log($content_query);
+
+		$count_query        = $base_count . $base_query . $tag_query . $term_query . $context_query . $search_query . $groupby_query . $sortby_query;
 		$count_query_result = $wpdb->get_results( $count_query );
 
 		// Retrieve faculty information for the contents.

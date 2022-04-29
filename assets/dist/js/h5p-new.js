@@ -134,86 +134,6 @@ document.getElementById('h5p-taxonomy'));
 
 /***/ }),
 
-/***/ "./assets/src/js/h5p-new-taxonomy-discipline.js":
-/*!******************************************************!*\
-  !*** ./assets/src/js/h5p-new-taxonomy-discipline.js ***!
-  \******************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _select2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./select2 */ "./assets/src/js/select2.js");
-var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/plugins/ubc-h5p-addon-taxonomy/assets/src/js/h5p-new-taxonomy-discipline.js";
-
-
-/* harmony default export */ __webpack_exports__["default"] = (props => {
-  const displine_list = ubc_h5p_admin.disciplines_list;
-  const {
-    disciplineSelected,
-    setDisciplineSelected,
-    isMulti
-  } = props;
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    selected: disciplineSelected,
-    options: displine_list,
-    placeholder: "Select Discipline...",
-    setSelected: setDisciplineSelected,
-    name: "ubc-h5p-content-discipline",
-    isMulti: isMulti,
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 8,
-      columnNumber: 9
-    }
-  });
-});
-
-/***/ }),
-
-/***/ "./assets/src/js/h5p-new-taxonomy-faculty.js":
-/*!***************************************************!*\
-  !*** ./assets/src/js/h5p-new-taxonomy-faculty.js ***!
-  \***************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _select2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./select2 */ "./assets/src/js/select2.js");
-var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/plugins/ubc-h5p-addon-taxonomy/assets/src/js/h5p-new-taxonomy-faculty.js";
-
-
-/* harmony default export */ __webpack_exports__["default"] = (props => {
-  const faculty_list = ubc_h5p_admin.faculties_list;
-  const {
-    facultySelected,
-    setFacultySelected,
-    isMulti
-  } = props;
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    selected: facultySelected,
-    options: faculty_list,
-    placeholder: "Select Faculty...",
-    setSelected: setFacultySelected,
-    name: "ubc-h5p-content-faculty",
-    isMulti: isMulti,
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 8,
-      columnNumber: 9
-    }
-  });
-});
-
-/***/ }),
-
 /***/ "./assets/src/js/h5p-new-taxonomy-metabox-wrap.js":
 /*!********************************************************!*\
   !*** ./assets/src/js/h5p-new-taxonomy-metabox-wrap.js ***!
@@ -281,9 +201,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! url-search-params-polyfill */ "./node_modules/url-search-params-polyfill/index.js");
 /* harmony import */ var url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _h5p_new_taxonomy_faculty__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./h5p-new-taxonomy-faculty */ "./assets/src/js/h5p-new-taxonomy-faculty.js");
-/* harmony import */ var _h5p_new_taxonomy_discipline__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./h5p-new-taxonomy-discipline */ "./assets/src/js/h5p-new-taxonomy-discipline.js");
-/* harmony import */ var _h5p_new_taxonomy_metabox_wrap__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./h5p-new-taxonomy-metabox-wrap */ "./assets/src/js/h5p-new-taxonomy-metabox-wrap.js");
+/* harmony import */ var _h5p_new_taxonomy_metabox_wrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./h5p-new-taxonomy-metabox-wrap */ "./assets/src/js/h5p-new-taxonomy-metabox-wrap.js");
+/* harmony import */ var _helper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./helper.js */ "./assets/src/js/helper.js");
+/* harmony import */ var _select2__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./select2 */ "./assets/src/js/select2.js");
 var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/plugins/ubc-h5p-addon-taxonomy/assets/src/js/h5p-new-taxonomy.js";
 
 
@@ -294,69 +214,147 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
   const [facultySelected, setFacultySelected] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
   const [disciplineSelected, setDisciplineSelected] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(() => {
-    const selectedFacultyFromDB = ubc_h5p_admin.content_faculty ? ubc_h5p_admin.content_faculty : [];
-    setFacultySelected(selectedFacultyFromDB && selectedFacultyFromDB.length !== 0 ? selectedFacultyFromDB : ubc_h5p_admin.user_faculty ? ubc_h5p_admin.user_faculty.map(faculty_id => {
-      return parseInt(faculty_id);
-    }) : []);
-    const selectedDisciplineFromDB = ubc_h5p_admin.content_discipline ? ubc_h5p_admin.content_discipline : [];
+    /**
+     * Few conditions to check with priority
+     * 
+     * 1. If the content already has faculties attached, then we use the faculties saved from database.
+     * 2. If the content does not have faculty attached, then we set the user's faculties as default.
+     */
+    const selectedFacultyFromDB = ubc_h5p_admin.content_faculty ? Object(_helper_js__WEBPACK_IMPORTED_MODULE_3__["retriveObjectsFrom2levelTermsOptions"])(ubc_h5p_admin.content_faculty, ubc_h5p_admin.faculties_list) : [];
+    const userFaculty = ubc_h5p_admin.user_faculty ? Object(_helper_js__WEBPACK_IMPORTED_MODULE_3__["retriveObjectsFrom2levelTermsOptions"])(ubc_h5p_admin.user_faculty, ubc_h5p_admin.faculties_list) : [];
+    setFacultySelected(selectedFacultyFromDB && selectedFacultyFromDB.length !== 0 ? selectedFacultyFromDB : userFaculty ? userFaculty : []);
+    /**
+     * If the content already has disciplines attached, then we use the disciplines save from database.
+     */
+
+    const selectedDisciplineFromDB = ubc_h5p_admin.content_discipline ? Object(_helper_js__WEBPACK_IMPORTED_MODULE_3__["retriveObjectsFrom2levelTermsOptions"])(ubc_h5p_admin.content_discipline, ubc_h5p_admin.disciplines_list) : [];
     setDisciplineSelected(selectedDisciplineFromDB ? selectedDisciplineFromDB : []);
   }, []);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 23,
+      lineNumber: 31,
       columnNumber: 9
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_h5p_new_taxonomy_metabox_wrap__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_h5p_new_taxonomy_metabox_wrap__WEBPACK_IMPORTED_MODULE_2__["default"], {
     label: "Faculty",
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 24,
+      lineNumber: 32,
       columnNumber: 13
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_h5p_new_taxonomy_faculty__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    facultySelected: facultySelected,
-    setFacultySelected: setFacultySelected,
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    selected: facultySelected,
+    isMulti: true,
+    options: Object(_helper_js__WEBPACK_IMPORTED_MODULE_3__["format2levelTermsOptions"])(ubc_h5p_admin.faculties_list),
+    placeholder: "Select Faculty...",
+    onChange: optionSelected => {
+      setFacultySelected(optionSelected);
+    },
+    name: "ubc-h5p-content-faculty",
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 25,
-      columnNumber: 17
+      lineNumber: 33,
+      columnNumber: 18
     }
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_h5p_new_taxonomy_metabox_wrap__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_h5p_new_taxonomy_metabox_wrap__WEBPACK_IMPORTED_MODULE_2__["default"], {
     label: "Discipline",
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 31,
+      lineNumber: 45,
       columnNumber: 13
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_h5p_new_taxonomy_discipline__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    disciplineSelected: disciplineSelected,
-    setDisciplineSelected: setDisciplineSelected,
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    selected: disciplineSelected,
+    isMulti: true,
+    options: Object(_helper_js__WEBPACK_IMPORTED_MODULE_3__["format2levelTermsOptions"])(ubc_h5p_admin.disciplines_list),
+    placeholder: "Select Discipline...",
+    onChange: optionSelected => {
+      setDisciplineSelected(optionSelected);
+    },
+    name: "ubc-h5p-content-discipline",
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 32,
+      lineNumber: 46,
       columnNumber: 17
     }
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     type: "hidden",
     value: JSON.stringify({
-      faculty: facultySelected,
-      discipline: disciplineSelected
+      faculty: facultySelected.map(faculty => {
+        return faculty.value;
+      }),
+      discipline: disciplineSelected.map(discipline => {
+        return discipline.value;
+      })
     }),
     name: "ubc-h5p-content-taxonomy",
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 37,
+      lineNumber: 57,
       columnNumber: 13
     }
   }));
 });
+
+/***/ }),
+
+/***/ "./assets/src/js/helper.js":
+/*!*********************************!*\
+  !*** ./assets/src/js/helper.js ***!
+  \*********************************/
+/*! exports provided: format2levelTermsOptions, retriveObjectsFrom2levelTermsOptions */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "format2levelTermsOptions", function() { return format2levelTermsOptions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "retriveObjectsFrom2levelTermsOptions", function() { return retriveObjectsFrom2levelTermsOptions; });
+/**
+ * The function converts nested array of taxonomy term objects such as faculty and discipline in to {label, value}
+ * that can be directly used in the Select component.
+ * It has to follow certain structure. Faculty and discipline as an example.
+ * The first level of terms are always going to be the group. The seconds level terms are the actual options.
+ * @param {array} options Nested array of taxonomy terms.
+ * @returns 
+ */
+const format2levelTermsOptions = options => {
+  return options.map(firstLevelOption => {
+    return {
+      label: firstLevelOption.name,
+      options: firstLevelOption.children ? firstLevelOption.children.map(secondLevelOption => {
+        return {
+          label: secondLevelOption.name,
+          value: secondLevelOption.term_id
+        };
+      }) : []
+    };
+  });
+};
+/**
+ * Retrive array of term objects based on array of term ids.
+ */
+
+const retriveObjectsFrom2levelTermsOptions = (objectIDArray, options) => {
+  const newOptions = [];
+  options.forEach(firstLevelOption => {
+    firstLevelOption.children.forEach(secondLevelOption => {
+      if (objectIDArray.includes(secondLevelOption.term_id)) {
+        newOptions.push({
+          label: secondLevelOption.name,
+          value: secondLevelOption.term_id
+        });
+      }
+    });
+  });
+  return newOptions;
+};
 
 /***/ }),
 
@@ -443,47 +441,20 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
   const {
     selected,
     options,
-    setSelected,
+    onChange,
+    placeholder,
+    name,
     isMulti = true
-  } = props; // selected is an array of options values. Need to convert to proper data structure
-
-  let newSelected = isMulti ? [] : ''; // Reformat options to required data structure.
-
-  let newOptions = Object.keys(options).map(campusIndex => {
-    return {
-      label: options[campusIndex].name,
-      options: options[campusIndex].children ? Object.keys(options[campusIndex].children).map(facultyIndex => {
-        const faculty = {
-          label: options[campusIndex].children[facultyIndex].name,
-          value: options[campusIndex].children[facultyIndex].term_id
-        };
-
-        if (isMulti && selected.includes(options[campusIndex].children[facultyIndex].term_id)) {
-          newSelected.push(faculty);
-        }
-
-        if (!isMulti && selected === options[campusIndex].children[facultyIndex].term_id) {
-          newSelected = faculty;
-        }
-
-        return faculty;
-      }) : []
-    };
-  });
-
-  if (!isMulti) {
-    newOptions.unshift({
-      label: 'All',
-      value: ''
-    });
-  }
-
+  } = props;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_select__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    value: newSelected,
+    value: selected,
     isMulti: isMulti,
-    options: newOptions,
-    placeholder: props.placeholder,
-    classNamePrefix: "custom-select",
+    options: isMulti ? options : [{
+      label: 'All',
+      value: null
+    }, ...options],
+    placeholder: placeholder,
+    classNamePrefix: name,
     components: {
       Option: _select2_option__WEBPACK_IMPORTED_MODULE_2__["default"]
     },
@@ -491,15 +462,12 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
       ignoreAccents: false
     }),
     onChange: optionSelected => {
-      // Convert it back to array of ids.
-      setSelected(isMulti ? optionSelected.map(option => {
-        return option.value;
-      }) : optionSelected.value);
+      onChange(optionSelected);
     },
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 41,
+      lineNumber: 9,
       columnNumber: 9
     }
   });

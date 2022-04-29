@@ -141,15 +141,22 @@ document.getElementById('h5p-contents'));
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _h5p_new_taxonomy_faculty__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./h5p-new-taxonomy-faculty */ "./assets/src/js/h5p-new-taxonomy-faculty.js");
-/* harmony import */ var _h5p_new_taxonomy_discipline__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./h5p-new-taxonomy-discipline */ "./assets/src/js/h5p-new-taxonomy-discipline.js");
-/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
+/* harmony import */ var _select2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./select2 */ "./assets/src/js/select2.js");
+/* harmony import */ var _helper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./helper.js */ "./assets/src/js/helper.js");
 var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/plugins/ubc-h5p-addon-taxonomy/assets/src/js/h5p-data-listing.js";
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 
-/* harmony default export */ __webpack_exports__["default"] = (props => {
+
+window.h5pTaxonomy = {};
+window.h5pTaxonomy.listView = {};
+/* harmony default export */ __webpack_exports__["default"] = (() => {
   const [data, setData] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
   const [offset, setOffset] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0);
   const [sort, setSort] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0);
@@ -167,10 +174,25 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     label: 'My faculty H5P content',
     slug: 'faculty'
   }]);
-  const [currentTab, setCurrentTab] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0);
+  const [currentTab, setCurrentTab] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0); // Turn array of strings to array of integers for further comparison.
+
+  const userFacultyIds = ubc_h5p_admin.user_faculty.map(faculty => {
+    return parseInt(faculty);
+  }); // List of faculty objects that belongs to current user.
+
+  const userFaculty = ubc_h5p_admin.faculties_list.map(campus => {
+    return _objectSpread(_objectSpread({}, campus), {}, {
+      children: campus.children.filter(faculty => {
+        return userFacultyIds.includes(faculty.term_id);
+      })
+    });
+  }); // Entire faculty list.
+
+  const allFaculty = ubc_h5p_admin.faculties_list; // Refetch the result from database if any of the filter changes.
+
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(() => {
     doFetch();
-  }, [currentTab, offset, sort, revert, facultySelected, disciplineSelected, tagSelected]);
+  }, [currentTab, offset, sort, revert, facultySelected, disciplineSelected, tagSelected]); // Fetch data from the database.
 
   const doFetch = () => {
     async function fetch() {
@@ -181,6 +203,8 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
 
     fetch();
   };
+
+  window.h5pTaxonomy.listView.doFetch = doFetch;
 
   const updateSort = newSort => {
     if (-1 === newSort) {
@@ -200,12 +224,12 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     let formData = new FormData();
     let terms = [];
 
-    if (facultySelected) {
-      terms.push(facultySelected);
+    if (facultySelected && facultySelected.value) {
+      terms.push(facultySelected.value);
     }
 
-    if (disciplineSelected) {
-      terms.push(disciplineSelected);
+    if (disciplineSelected && disciplineSelected.value) {
+      terms.push(disciplineSelected.value);
     }
 
     formData.append('action', 'ubc_h5p_list_contents');
@@ -218,7 +242,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     formData.append('context', tabOptions[currentTab].slug);
     formData.append('nonce', ubc_h5p_admin.security_nonce);
     formData.append('terms', JSON.stringify(terms));
-    formData = wp.hooks.applyFilters('h5p-listing-view-additional-form-data', formData);
+    formData = wp.hooks.applyFilters('h5p-listing-view-additional-form-data', formData, currentTab);
     let response = await fetch(ajaxurl, {
       method: 'POST',
       body: formData
@@ -247,11 +271,15 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     }
   };
 
+  const moreFilters = () => {
+    return wp.hooks.applyFilters('h5p-listing-view-additional-filters', '', currentTab);
+  };
+
   return data ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 112,
+      lineNumber: 138,
       columnNumber: 9
     }
   }, !ubc_h5p_admin.can_user_editor_others ? null : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -259,7 +287,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 113,
+      lineNumber: 139,
       columnNumber: 63
     }
   }, tabOptions.map((tab, index) => {
@@ -274,7 +302,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 115,
+        lineNumber: 141,
         columnNumber: 29
       }
     }, tab.label);
@@ -283,7 +311,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 128,
+      lineNumber: 154,
       columnNumber: 13
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
@@ -302,31 +330,41 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 129,
+      lineNumber: 155,
       columnNumber: 17
     }
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_h5p_new_taxonomy_faculty__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    facultySelected: facultySelected,
-    setFacultySelected: setFacultySelected,
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    selected: facultySelected,
     isMulti: false,
+    options: currentTab === 1 ? Object(_helper_js__WEBPACK_IMPORTED_MODULE_2__["format2levelTermsOptions"])(userFaculty) : Object(_helper_js__WEBPACK_IMPORTED_MODULE_2__["format2levelTermsOptions"])(allFaculty),
+    placeholder: "Select Faculty...",
+    onChange: optionSelected => {
+      setFacultySelected(optionSelected);
+    },
+    name: "ubc-h5p-content-faculty",
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 143,
+      lineNumber: 169,
       columnNumber: 17
     }
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_h5p_new_taxonomy_discipline__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    disciplineSelected: disciplineSelected,
-    setDisciplineSelected: setDisciplineSelected,
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    selected: disciplineSelected,
     isMulti: false,
+    options: Object(_helper_js__WEBPACK_IMPORTED_MODULE_2__["format2levelTermsOptions"])(ubc_h5p_admin.disciplines_list),
+    placeholder: "Select Discipline...",
+    onChange: optionSelected => {
+      setDisciplineSelected(optionSelected);
+    },
+    name: "ubc-h5p-content-discipline",
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 148,
+      lineNumber: 179,
       columnNumber: 17
     }
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_select__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    value: tagSelected,
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    selected: tagSelected,
     placeholder: "Select Tags...",
     isMulti: true,
     options: ubc_h5p_admin.tag_list.map(tag => {
@@ -341,10 +379,18 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 153,
+      lineNumber: 189,
       columnNumber: 17
     }
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    id: "h5p-more-filters",
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 204,
+      columnNumber: 17
+    }
+  }, moreFilters())), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
     className: "wp-list-table widefat fixed",
     style: {
       marginTop: '20px'
@@ -352,21 +398,21 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 168,
+      lineNumber: 209,
       columnNumber: 13
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 169,
+      lineNumber: 210,
       columnNumber: 17
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 170,
+      lineNumber: 211,
       columnNumber: 21
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -378,7 +424,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 171,
+      lineNumber: 212,
       columnNumber: 25
     }
   }, "Title"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -390,7 +436,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 178,
+      lineNumber: 219,
       columnNumber: 25
     }
   }, "Content Type"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -402,7 +448,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 185,
+      lineNumber: 226,
       columnNumber: 25
     }
   }, "Author"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -411,7 +457,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 192,
+      lineNumber: 233,
       columnNumber: 25
     }
   }, "Faculties"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -420,7 +466,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 193,
+      lineNumber: 234,
       columnNumber: 25
     }
   }, "Tags"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -432,7 +478,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 194,
+      lineNumber: 235,
       columnNumber: 25
     }
   }, "Last Modified"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -440,21 +486,21 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 201,
+      lineNumber: 242,
       columnNumber: 25
     }
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tfoot", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 204,
+      lineNumber: 245,
       columnNumber: 17
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 205,
+      lineNumber: 246,
       columnNumber: 21
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
@@ -462,7 +508,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 206,
+      lineNumber: 247,
       columnNumber: 25
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -470,7 +516,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 207,
+      lineNumber: 248,
       columnNumber: 29
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
@@ -483,14 +529,14 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 208,
+      lineNumber: 249,
       columnNumber: 33
     }
   }, "<"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 216,
+      lineNumber: 257,
       columnNumber: 33
     }
   }, `Page ${(offset + limit) / limit} of ${Math.ceil(countTotal / limit)}`), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
@@ -503,14 +549,14 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 217,
+      lineNumber: 258,
       columnNumber: 33
     }
   }, ">"))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 229,
+      lineNumber: 270,
       columnNumber: 17
     }
   }, data.map((entry, index) => {
@@ -523,14 +569,14 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 237,
+        lineNumber: 278,
         columnNumber: 25
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 238,
+        lineNumber: 279,
         columnNumber: 29
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -538,49 +584,49 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 238,
+        lineNumber: 279,
         columnNumber: 33
       }
     }, entry.title)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 239,
+        lineNumber: 280,
         columnNumber: 29
       }
     }, entry.content_type), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 240,
+        lineNumber: 281,
         columnNumber: 29
       }
     }, entry.user_name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 241,
+        lineNumber: 282,
         columnNumber: 29
       }
     }, faculties.join(',')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 242,
+        lineNumber: 283,
         columnNumber: 29
       }
     }, formattedTags), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 243,
+        lineNumber: 284,
         columnNumber: 29
       }
     }, entry.updated_at), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 244,
+        lineNumber: 285,
         columnNumber: 29
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -588,7 +634,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 244,
+        lineNumber: 285,
         columnNumber: 33
       }
     }, "Results")));
@@ -597,83 +643,56 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
 
 /***/ }),
 
-/***/ "./assets/src/js/h5p-new-taxonomy-discipline.js":
-/*!******************************************************!*\
-  !*** ./assets/src/js/h5p-new-taxonomy-discipline.js ***!
-  \******************************************************/
-/*! exports provided: default */
+/***/ "./assets/src/js/helper.js":
+/*!*********************************!*\
+  !*** ./assets/src/js/helper.js ***!
+  \*********************************/
+/*! exports provided: format2levelTermsOptions, retriveObjectsFrom2levelTermsOptions */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _select2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./select2 */ "./assets/src/js/select2.js");
-var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/plugins/ubc-h5p-addon-taxonomy/assets/src/js/h5p-new-taxonomy-discipline.js";
-
-
-/* harmony default export */ __webpack_exports__["default"] = (props => {
-  const displine_list = ubc_h5p_admin.disciplines_list;
-  const {
-    disciplineSelected,
-    setDisciplineSelected,
-    isMulti
-  } = props;
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    selected: disciplineSelected,
-    options: displine_list,
-    placeholder: "Select Discipline...",
-    setSelected: setDisciplineSelected,
-    name: "ubc-h5p-content-discipline",
-    isMulti: isMulti,
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 8,
-      columnNumber: 9
-    }
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "format2levelTermsOptions", function() { return format2levelTermsOptions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "retriveObjectsFrom2levelTermsOptions", function() { return retriveObjectsFrom2levelTermsOptions; });
+/**
+ * The function converts nested array of taxonomy term objects such as faculty and discipline in to {label, value}
+ * that can be directly used in the Select component.
+ * It has to follow certain structure. Faculty and discipline as an example.
+ * The first level of terms are always going to be the group. The seconds level terms are the actual options.
+ * @param {array} options Nested array of taxonomy terms.
+ * @returns 
+ */
+const format2levelTermsOptions = options => {
+  return options.map(firstLevelOption => {
+    return {
+      label: firstLevelOption.name,
+      options: firstLevelOption.children ? firstLevelOption.children.map(secondLevelOption => {
+        return {
+          label: secondLevelOption.name,
+          value: secondLevelOption.term_id
+        };
+      }) : []
+    };
   });
-});
+};
+/**
+ * Retrive array of term objects based on array of term ids.
+ */
 
-/***/ }),
-
-/***/ "./assets/src/js/h5p-new-taxonomy-faculty.js":
-/*!***************************************************!*\
-  !*** ./assets/src/js/h5p-new-taxonomy-faculty.js ***!
-  \***************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _select2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./select2 */ "./assets/src/js/select2.js");
-var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/plugins/ubc-h5p-addon-taxonomy/assets/src/js/h5p-new-taxonomy-faculty.js";
-
-
-/* harmony default export */ __webpack_exports__["default"] = (props => {
-  const faculty_list = ubc_h5p_admin.faculties_list;
-  const {
-    facultySelected,
-    setFacultySelected,
-    isMulti
-  } = props;
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    selected: facultySelected,
-    options: faculty_list,
-    placeholder: "Select Faculty...",
-    setSelected: setFacultySelected,
-    name: "ubc-h5p-content-faculty",
-    isMulti: isMulti,
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 8,
-      columnNumber: 9
-    }
+const retriveObjectsFrom2levelTermsOptions = (objectIDArray, options) => {
+  const newOptions = [];
+  options.forEach(firstLevelOption => {
+    firstLevelOption.children.forEach(secondLevelOption => {
+      if (objectIDArray.includes(secondLevelOption.term_id)) {
+        newOptions.push({
+          label: secondLevelOption.name,
+          value: secondLevelOption.term_id
+        });
+      }
+    });
   });
-});
+  return newOptions;
+};
 
 /***/ }),
 
@@ -760,47 +779,20 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
   const {
     selected,
     options,
-    setSelected,
+    onChange,
+    placeholder,
+    name,
     isMulti = true
-  } = props; // selected is an array of options values. Need to convert to proper data structure
-
-  let newSelected = isMulti ? [] : ''; // Reformat options to required data structure.
-
-  let newOptions = Object.keys(options).map(campusIndex => {
-    return {
-      label: options[campusIndex].name,
-      options: options[campusIndex].children ? Object.keys(options[campusIndex].children).map(facultyIndex => {
-        const faculty = {
-          label: options[campusIndex].children[facultyIndex].name,
-          value: options[campusIndex].children[facultyIndex].term_id
-        };
-
-        if (isMulti && selected.includes(options[campusIndex].children[facultyIndex].term_id)) {
-          newSelected.push(faculty);
-        }
-
-        if (!isMulti && selected === options[campusIndex].children[facultyIndex].term_id) {
-          newSelected = faculty;
-        }
-
-        return faculty;
-      }) : []
-    };
-  });
-
-  if (!isMulti) {
-    newOptions.unshift({
-      label: 'All',
-      value: ''
-    });
-  }
-
+  } = props;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_select__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    value: newSelected,
+    value: selected,
     isMulti: isMulti,
-    options: newOptions,
-    placeholder: props.placeholder,
-    classNamePrefix: "custom-select",
+    options: isMulti ? options : [{
+      label: 'All',
+      value: null
+    }, ...options],
+    placeholder: placeholder,
+    classNamePrefix: name,
     components: {
       Option: _select2_option__WEBPACK_IMPORTED_MODULE_2__["default"]
     },
@@ -808,15 +800,12 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
       ignoreAccents: false
     }),
     onChange: optionSelected => {
-      // Convert it back to array of ids.
-      setSelected(isMulti ? optionSelected.map(option => {
-        return option.value;
-      }) : optionSelected.value);
+      onChange(optionSelected);
     },
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 41,
+      lineNumber: 9,
       columnNumber: 9
     }
   });
