@@ -228,7 +228,7 @@ window.h5pTaxonomy.listView = {};
       terms.push(facultySelected.value);
     }
 
-    if (disciplineSelected && facultySelected.value) {
+    if (disciplineSelected && disciplineSelected.value) {
       terms.push(disciplineSelected.value);
     }
 

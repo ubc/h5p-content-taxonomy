@@ -84,7 +84,7 @@ export default () => {
         if( facultySelected && facultySelected.value ) {
             terms.push(facultySelected.value);
         }
-        if( disciplineSelected && facultySelected.value ) {
+        if( disciplineSelected && disciplineSelected.value ) {
             terms.push(disciplineSelected.value);
         }
 
