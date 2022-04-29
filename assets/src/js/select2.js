@@ -3,7 +3,7 @@ import ReactSelect, { createFilter } from 'react-select';
 import CustomOption from './select2-option';
 
 export default props => {
-    const { selected, options, setSelected, placeholder, name, isMulti=true } = props;
+    const { selected, options, onChange, placeholder, name, isMulti=true } = props;
 
     return (
         <ReactSelect
@@ -15,7 +15,7 @@ export default props => {
             components={{ Option: CustomOption }}
             filterOption={createFilter({ ignoreAccents: false })}
             onChange={optionSelected => {
-                setSelected( optionSelected );
+                onChange( optionSelected );
             }}
         />
     );

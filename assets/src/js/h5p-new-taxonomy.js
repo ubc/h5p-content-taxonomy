@@ -35,7 +35,9 @@ export default ( props ) => {
                     isMulti={ true }
                     options={ format2levelTermsOptions(ubc_h5p_admin.faculties_list) }
                     placeholder="Select Faculty..."
-                    setSelected={ setFacultySelected }
+                    onChange={ optionSelected => {
+                        setFacultySelected(optionSelected);
+                    } }
                     name="ubc-h5p-content-faculty"
                 />
             </MetaBoxWrap>
@@ -46,7 +48,9 @@ export default ( props ) => {
                     isMulti={ true }
                     options={ format2levelTermsOptions(ubc_h5p_admin.disciplines_list) }
                     placeholder="Select Discipline..."
-                    setSelected={ setDisciplineSelected }
+                    onChange={ optionSelected => {
+                        setDisciplineSelected(optionSelected);
+                    } }
                     name="ubc-h5p-content-discipline"
                 />
             </MetaBoxWrap>

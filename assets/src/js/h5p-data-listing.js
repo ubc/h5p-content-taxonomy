@@ -170,7 +170,9 @@ export default () => {
                     isMulti={ false }
                     options={ currentTab === 1 ? format2levelTermsOptions(userFaculty) : format2levelTermsOptions(allFaculty) }
                     placeholder="Select Faculty..."
-                    setSelected={ setFacultySelected }
+                    onChange={ optionSelected => {
+                        setFacultySelected(optionSelected);
+                    } }
                     name="ubc-h5p-content-faculty"
                 />
                 <Select
@@ -178,11 +180,13 @@ export default () => {
                     isMulti={ false }
                     options={ format2levelTermsOptions(ubc_h5p_admin.disciplines_list) }
                     placeholder="Select Discipline..."
-                    setSelected={ setDisciplineSelected }
+                    onChange={ optionSelected => {
+                        setDisciplineSelected(optionSelected);
+                    } }
                     name="ubc-h5p-content-discipline"
                 />
                 <Select
-                    value={tagSelected}
+                    selected={tagSelected}
                     placeholder='Select Tags...'
                     isMulti
                     options={ ubc_h5p_admin.tag_list.map( tag => {
