@@ -37,7 +37,7 @@ class Helper {
 			// recurse to get the direct descendants of "this" term.
 			$term->children = self::get_taxonomy_hierarchy( $taxonomy, $term->term_id );
 			// add the term to our new array.
-			array_push( $children, $term );
+			$children[ $term->term_id ] = $term;
 		}
 		// send the results back to the caller.
 		return $children;
