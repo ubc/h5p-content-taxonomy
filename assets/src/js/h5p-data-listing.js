@@ -80,10 +80,11 @@ export default () => {
     const fetchFromAPI = async () => {
         let formData = new FormData();
         let terms = [];
-        if( facultySelected ) {
+
+        if( facultySelected && facultySelected.value ) {
             terms.push(facultySelected.value);
         }
-        if( disciplineSelected ) {
+        if( disciplineSelected && facultySelected.value ) {
             terms.push(disciplineSelected.value);
         }
 

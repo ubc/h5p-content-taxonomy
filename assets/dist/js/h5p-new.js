@@ -449,7 +449,10 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_select__WEBPACK_IMPORTED_MODULE_1__["default"], {
     value: selected,
     isMulti: isMulti,
-    options: options,
+    options: isMulti ? options : [{
+      label: 'All',
+      value: null
+    }, ...options],
     placeholder: placeholder,
     classNamePrefix: name,
     components: {

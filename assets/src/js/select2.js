@@ -9,7 +9,14 @@ export default props => {
         <ReactSelect
             value={selected}
             isMulti={isMulti}
-            options={options}
+            options={isMulti ? options : [
+                {
+                    label: 'All',
+                    value: null
+                },
+                ...options,
+
+            ]}
             placeholder={placeholder}
             classNamePrefix={name}
             components={{ Option: CustomOption }}
