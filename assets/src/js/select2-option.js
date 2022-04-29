@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { components } from 'react-select';
 
 const CustomOption = ({ children, ...props }) => {

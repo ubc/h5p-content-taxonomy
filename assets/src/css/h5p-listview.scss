@@ -31,26 +31,20 @@
         grid-area: discipline;
     }
 
-    >div:nth-child(4){
-        grid-area: tags;
-    }
-
     >div:last-child{
-        grid-area: more-filters;
+        grid-area: tags;
     }
 
     grid-template-areas: 
     "search faculty faculty discipline discipline"
-    "tags tags tags tags tags"
-    "more-filters more-filters more-filters more-filters more-filters";
+    "tags tags tags tags tags";
 
     @media only screen and (max-width: 600px) {
         grid-template-areas: 
         "search"
         "faculty"
         "discipline"
-        "tags"
-        "more-filters";
+        "tags";
     }
 }
 
