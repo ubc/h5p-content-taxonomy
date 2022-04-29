@@ -1,9 +1,11 @@
 import React, {useState, useEffect, Fragment} from 'react';
-import Faculty from './h5p-new-taxonomy-faculty';
-import Discipline from './h5p-new-taxonomy-discipline';
-import Select from 'react-select';
+import Select from './select2';
+import { format2levelTermsOptions } from './helper.js';
 
-export default ( props ) => {
+window.h5pTaxonomy = {};
+window.h5pTaxonomy.listView = {};
+
+export default () => {
 
     const [data, setData] = useState([]);
     const [offset, setOffset] = useState(0);
@@ -28,10 +30,28 @@ export default ( props ) => {
     ]);
     const [currentTab, setCurrentTab] = useState(0);
 
+    // Turn array of strings to array of integers for further comparison.
+    const userFacultyIds = ubc_h5p_admin.user_faculty.map(faculty => {
+        return parseInt(faculty);
+    })
+    // List of faculty objects that belongs to current user.
+    const userFaculty = ubc_h5p_admin.faculties_list.map(campus => {
+        return { 
+                ...campus, 
+                children: campus.children.filter(faculty => {
+                    return userFacultyIds.includes(faculty.term_id);
+                })
+            }
+    });
+    // Entire faculty list.
+    const allFaculty = ubc_h5p_admin.faculties_list;
+
+    // Refetch the result from database if any of the filter changes.
     useEffect(() => {
         doFetch();
     }, [ currentTab, offset, sort, revert, facultySelected, disciplineSelected, tagSelected ]);
 
+    // Fetch data from the database.
     const doFetch = () => {
         async function fetch() {
             let data = await fetchFromAPI();
@@ -41,6 +61,7 @@ export default ( props ) => {
         
         fetch();
     }
+    window.h5pTaxonomy.listView.doFetch = doFetch;
 
     const updateSort = newSort => {
         if( -1 === newSort ) {
@@ -60,10 +81,10 @@ export default ( props ) => {
         let formData = new FormData();
         let terms = [];
         if( facultySelected ) {
-            terms.push(facultySelected);
+            terms.push(facultySelected.value);
         }
         if( disciplineSelected ) {
-            terms.push(disciplineSelected);
+            terms.push(disciplineSelected.value);
         }
 
         formData.append( 'action', 'ubc_h5p_list_contents' );
@@ -77,7 +98,7 @@ export default ( props ) => {
         formData.append( 'nonce', ubc_h5p_admin.security_nonce );
         formData.append( 'terms', JSON.stringify(terms));
 
-        formData = wp.hooks.applyFilters('h5p-listing-view-additional-form-data', formData);
+        formData = wp.hooks.applyFilters('h5p-listing-view-additional-form-data', formData, currentTab);
 
         let response = await fetch(ajaxurl, {
             method: 'POST',
@@ -107,6 +128,10 @@ export default ( props ) => {
             setOffset(offset + limit);
         }
     }
+
+    const moreFilters = () => {
+        return wp.hooks.applyFilters('h5p-listing-view-additional-filters', '', currentTab);
+    };
 
     return data ? (
         <Fragment>
@@ -140,15 +165,21 @@ export default ( props ) => {
                     }}
                     value={search}
                 />
-                <Faculty
-                    facultySelected={ facultySelected }
-                    setFacultySelected={ setFacultySelected }
-                    isMulti={false}
+                <Select
+                    selected={ facultySelected }
+                    isMulti={ false }
+                    options={ currentTab === 1 ? format2levelTermsOptions(userFaculty) : format2levelTermsOptions(allFaculty) }
+                    placeholder="Select Faculty..."
+                    setSelected={ setFacultySelected }
+                    name="ubc-h5p-content-faculty"
                 />
-                <Discipline
-                    disciplineSelected={ disciplineSelected }
-                    setDisciplineSelected={ setDisciplineSelected }
-                    isMulti={false}
+                <Select
+                    selected={ disciplineSelected }
+                    isMulti={ false }
+                    options={ format2levelTermsOptions(ubc_h5p_admin.disciplines_list) }
+                    placeholder="Select Discipline..."
+                    setSelected={ setDisciplineSelected }
+                    name="ubc-h5p-content-discipline"
                 />
                 <Select
                     value={tagSelected}
@@ -164,7 +195,12 @@ export default ( props ) => {
                         setTagSelected( optionSelected );
                     }}
                 />
+
+                <div id="h5p-more-filters">
+                    { moreFilters() }    
+                </div>
             </div>
+
             <table className="wp-list-table widefat fixed" style={{ marginTop: '20px' }}>
                 <thead>
                     <tr>
