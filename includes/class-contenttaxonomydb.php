@@ -138,6 +138,7 @@ class ContentTaxonomyDB {
 
 		$groupby_query = ' GROUP BY hc.id';
 
+
 		/** Tag Query */
 
 		// Filter content based on tags selected.
@@ -158,7 +159,7 @@ class ContentTaxonomyDB {
 		/** End Tag Query */
 
 		/** Term Query */
-		$term_ids = apply_filters( 'h5p_content_taxonomy_terms', $term_ids, $context );
+		$term_ids = apply_filters( 'h5p_content_taxonomy_terms', $term_ids );
 
 		if ( 0 < count( $term_ids ) ) {
 			$term_query = ' RIGHT JOIN (SELECT content_id FROM ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id IN (' . implode( ',', $term_ids ) . ') group by content_id having count(*)>=' . count( $term_ids ) . ') ctt on ctt.content_id = hc.id';
@@ -176,7 +177,7 @@ class ContentTaxonomyDB {
 		$content_query        = $base_select . $base_query . $tag_query . $term_query . $context_query . $search_query . $groupby_query . $sortby_query . $pagination_query;
 		$content_query_result = $wpdb->get_results( $content_query );
 
-		//Helper::write_log($content_query);
+		Helper::write_log($content_query);
 
 		$count_query        = $base_count . $base_query . $tag_query . $term_query . $context_query . $search_query . $groupby_query . $sortby_query;
 		$count_query_result = $wpdb->get_results( $count_query );
