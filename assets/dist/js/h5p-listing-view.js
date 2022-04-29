@@ -338,9 +338,7 @@ window.h5pTaxonomy.listView = {};
     isMulti: false,
     options: currentTab === 1 ? Object(_helper_js__WEBPACK_IMPORTED_MODULE_2__["format2levelTermsOptions"])(userFaculty) : Object(_helper_js__WEBPACK_IMPORTED_MODULE_2__["format2levelTermsOptions"])(allFaculty),
     placeholder: "Select Faculty...",
-    onChange: optionSelected => {
-      setFacultySelected(optionSelected);
-    },
+    setSelected: setFacultySelected,
     name: "ubc-h5p-content-faculty",
     __self: undefined,
     __source: {
@@ -353,18 +351,16 @@ window.h5pTaxonomy.listView = {};
     isMulti: false,
     options: Object(_helper_js__WEBPACK_IMPORTED_MODULE_2__["format2levelTermsOptions"])(ubc_h5p_admin.disciplines_list),
     placeholder: "Select Discipline...",
-    onChange: optionSelected => {
-      setDisciplineSelected(optionSelected);
-    },
+    setSelected: setDisciplineSelected,
     name: "ubc-h5p-content-discipline",
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 178,
+      lineNumber: 176,
       columnNumber: 17
     }
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    selected: tagSelected,
+    value: tagSelected,
     placeholder: "Select Tags...",
     isMulti: true,
     options: ubc_h5p_admin.tag_list.map(tag => {
@@ -379,7 +375,7 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 188,
+      lineNumber: 184,
       columnNumber: 17
     }
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -387,7 +383,7 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 203,
+      lineNumber: 199,
       columnNumber: 17
     }
   }, moreFilters())), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
@@ -398,21 +394,21 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 208,
+      lineNumber: 204,
       columnNumber: 13
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 209,
+      lineNumber: 205,
       columnNumber: 17
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 210,
+      lineNumber: 206,
       columnNumber: 21
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -424,7 +420,7 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 211,
+      lineNumber: 207,
       columnNumber: 25
     }
   }, "Title"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -436,7 +432,7 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 218,
+      lineNumber: 214,
       columnNumber: 25
     }
   }, "Content Type"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -448,7 +444,7 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 225,
+      lineNumber: 221,
       columnNumber: 25
     }
   }, "Author"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -457,7 +453,7 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 232,
+      lineNumber: 228,
       columnNumber: 25
     }
   }, "Faculties"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -466,7 +462,7 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 233,
+      lineNumber: 229,
       columnNumber: 25
     }
   }, "Tags"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -478,7 +474,7 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 234,
+      lineNumber: 230,
       columnNumber: 25
     }
   }, "Last Modified"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -486,21 +482,21 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 241,
+      lineNumber: 237,
       columnNumber: 25
     }
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tfoot", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 244,
+      lineNumber: 240,
       columnNumber: 17
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 245,
+      lineNumber: 241,
       columnNumber: 21
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
@@ -508,7 +504,7 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 246,
+      lineNumber: 242,
       columnNumber: 25
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -516,7 +512,7 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 247,
+      lineNumber: 243,
       columnNumber: 29
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
@@ -529,14 +525,14 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 248,
+      lineNumber: 244,
       columnNumber: 33
     }
   }, "<"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 256,
+      lineNumber: 252,
       columnNumber: 33
     }
   }, `Page ${(offset + limit) / limit} of ${Math.ceil(countTotal / limit)}`), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
@@ -549,14 +545,14 @@ window.h5pTaxonomy.listView = {};
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 257,
+      lineNumber: 253,
       columnNumber: 33
     }
   }, ">"))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 269,
+      lineNumber: 265,
       columnNumber: 17
     }
   }, data.map((entry, index) => {
@@ -569,14 +565,14 @@ window.h5pTaxonomy.listView = {};
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 277,
+        lineNumber: 273,
         columnNumber: 25
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 278,
+        lineNumber: 274,
         columnNumber: 29
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -584,49 +580,49 @@ window.h5pTaxonomy.listView = {};
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 278,
+        lineNumber: 274,
         columnNumber: 33
       }
     }, entry.title)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 279,
+        lineNumber: 275,
         columnNumber: 29
       }
     }, entry.content_type), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 280,
+        lineNumber: 276,
         columnNumber: 29
       }
     }, entry.user_name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 281,
+        lineNumber: 277,
         columnNumber: 29
       }
     }, faculties.join(',')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 282,
+        lineNumber: 278,
         columnNumber: 29
       }
     }, formattedTags), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 283,
+        lineNumber: 279,
         columnNumber: 29
       }
     }, entry.updated_at), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 284,
+        lineNumber: 280,
         columnNumber: 29
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -634,7 +630,7 @@ window.h5pTaxonomy.listView = {};
       __self: undefined,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 284,
+        lineNumber: 280,
         columnNumber: 33
       }
     }, "Results")));
@@ -779,7 +775,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
   const {
     selected,
     options,
-    onChange,
+    setSelected,
     placeholder,
     name,
     isMulti = true
@@ -797,7 +793,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
       ignoreAccents: false
     }),
     onChange: optionSelected => {
-      onChange(optionSelected);
+      setSelected(optionSelected);
     },
     __self: undefined,
     __source: {
