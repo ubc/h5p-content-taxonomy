@@ -221,7 +221,9 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
      * 2. If the content does not have faculty attached, then we set the user's faculties as default.
      */
     const selectedFacultyFromDB = ubc_h5p_admin.content_faculty ? Object(_helper_js__WEBPACK_IMPORTED_MODULE_3__["retriveObjectsFrom2levelTermsOptions"])(ubc_h5p_admin.content_faculty, ubc_h5p_admin.faculties_list) : [];
-    const userFaculty = ubc_h5p_admin.user_faculty ? Object(_helper_js__WEBPACK_IMPORTED_MODULE_3__["retriveObjectsFrom2levelTermsOptions"])(ubc_h5p_admin.user_faculty, ubc_h5p_admin.faculties_list) : [];
+    const userFaculty = ubc_h5p_admin.user_faculty ? Object(_helper_js__WEBPACK_IMPORTED_MODULE_3__["retriveObjectsFrom2levelTermsOptions"])(ubc_h5p_admin.user_faculty.map(faculty => {
+      return parseInt(faculty);
+    }), ubc_h5p_admin.faculties_list) : [];
     setFacultySelected(selectedFacultyFromDB && selectedFacultyFromDB.length !== 0 ? selectedFacultyFromDB : userFaculty ? userFaculty : []);
     /**
      * If the content already has disciplines attached, then we use the disciplines save from database.
@@ -234,7 +236,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 31,
+      lineNumber: 33,
       columnNumber: 9
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_h5p_new_taxonomy_metabox_wrap__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -242,7 +244,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 32,
+      lineNumber: 34,
       columnNumber: 13
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -257,7 +259,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 33,
+      lineNumber: 35,
       columnNumber: 18
     }
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_h5p_new_taxonomy_metabox_wrap__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -265,7 +267,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 45,
+      lineNumber: 47,
       columnNumber: 13
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -280,7 +282,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 46,
+      lineNumber: 48,
       columnNumber: 17
     }
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
@@ -297,7 +299,7 @@ var _jsxFileName = "/Users/kelvin/Local Sites/multisite/app/public/wp-content/pl
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 57,
+      lineNumber: 59,
       columnNumber: 13
     }
   }));

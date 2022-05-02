@@ -17,7 +17,9 @@ export default ( props ) => {
          * 2. If the content does not have faculty attached, then we set the user's faculties as default.
          */
         const selectedFacultyFromDB = ubc_h5p_admin.content_faculty ? retriveObjectsFrom2levelTermsOptions(ubc_h5p_admin.content_faculty, ubc_h5p_admin.faculties_list) : [];
-        const userFaculty = ubc_h5p_admin.user_faculty ? retriveObjectsFrom2levelTermsOptions(ubc_h5p_admin.user_faculty, ubc_h5p_admin.faculties_list) : [];
+        const userFaculty = ubc_h5p_admin.user_faculty ? retriveObjectsFrom2levelTermsOptions(ubc_h5p_admin.user_faculty.map(faculty => {
+            return parseInt(faculty);
+        }), ubc_h5p_admin.faculties_list) : [];
         setFacultySelected( selectedFacultyFromDB && selectedFacultyFromDB.length !== 0 ? selectedFacultyFromDB : ( userFaculty ? userFaculty : [] ) );
 
         /**

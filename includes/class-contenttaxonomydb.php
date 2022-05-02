@@ -81,7 +81,7 @@ class ContentTaxonomyDB {
 		global $wpdb;
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		$results = $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}h5p_contents_taxonomy WHERE content_id = %d", $content_id ) );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}h5p_contents_taxonomy WHERE content_id = %d", $content_id ) );
 	}//end clear_content_terms()
 
 	/**
@@ -95,7 +95,7 @@ class ContentTaxonomyDB {
 		global $wpdb;
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		$results = $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}h5p_contents_taxonomy WHERE content_id = %d and taxonomy = %s", $content_id, $term_type ) );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}h5p_contents_taxonomy WHERE content_id = %d and taxonomy = %s", $content_id, $term_type ) );
 	}//end clear_content_terms_by_type()
 
 	/**
@@ -108,6 +108,7 @@ class ContentTaxonomyDB {
 	 * @param int    $offset skip this many rows.
 	 * @param string $search terms to search.
 	 * @param bool   $term_ids term ids to filter the result by. Only expect at most two terms to be searched.
+	 * @param array  $tags array of tags attached to current h5p content.
 	 * @return array query results.
 	 */
 	public static function get_contents( $context = 'self', $sortby = 0, $reverse_order = false, $limit = null, $offset = null, $search = null, $term_ids = array(), $tags = array() ) {
@@ -174,11 +175,11 @@ class ContentTaxonomyDB {
 		$pagination_query = ' LIMIT ' . ( $offset ? $offset : '0' ) . ' ,' . ( $limit ? $limit : '20' );
 
 		$content_query        = $base_select . $base_query . $tag_query . $term_query . $context_query . $search_query . $groupby_query . $sortby_query . $pagination_query;
+		// phpcs:ignore
 		$content_query_result = $wpdb->get_results( $content_query );
 
-		//Helper::write_log($content_query);
-
-		$count_query        = $base_count . $base_query . $tag_query . $term_query . $context_query . $search_query . $groupby_query . $sortby_query;
+		$count_query = $base_count . $base_query . $tag_query . $term_query . $context_query . $search_query . $groupby_query . $sortby_query;
+		// phpcs:ignore		
 		$count_query_result = $wpdb->get_results( $count_query );
 
 		// Retrieve faculty information for the contents.
@@ -209,11 +210,17 @@ class ContentTaxonomyDB {
 		);
 	}//end get_contents()
 
+	/**
+	 * Get tags attached to H5P content.
+	 *
+	 * @return array Array of tags.
+	 */
 	public static function get_content_tags() {
 		global $wpdb;
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		$query  = 'SELECT * FROM ' . $wpdb->prefix . 'h5p_tags';
+		$query = 'SELECT * FROM ' . $wpdb->prefix . 'h5p_tags';
+		// phpcs:ignore
 		$result = $wpdb->get_results( $query );
 
 		return $result;

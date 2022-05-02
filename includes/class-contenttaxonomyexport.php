@@ -52,6 +52,11 @@ class ContentTaxonomyExport {
 		);
 	}//end create_taxonomy_menus()
 
+	/**
+	 * Create starter template for import and export.
+	 *
+	 * @return void
+	 */
 	public function import_export_template() {
 		do_action( 'h5p_export_actions' );
 		?>
@@ -96,6 +101,14 @@ class ContentTaxonomyExport {
 	 * @return void
 	 */
 	public function import_export_taxonomy_actions() {
+		if ( empty( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'import_export_h5p_taxonomy' ) ) {
+			return;
+		}
+
+		if ( ! Helper::is_role_administrator() ) {
+			return;
+		}
+
 		if ( ! isset( $_POST['action'] ) ) {
 			return;
 		}
@@ -106,6 +119,7 @@ class ContentTaxonomyExport {
 		}
 
 		if ( 'import_terms' === $_POST['action'] && isset( $_FILES['import_terms_file'] ) ) {
+			// phpcs:ignore
 			$this->import_terms( $_FILES['import_terms_file'] );
 		}
 	}
@@ -139,6 +153,12 @@ class ContentTaxonomyExport {
 		die();
 	}
 
+	/**
+	 * Handle actions that imports taxonomy terms.
+	 *
+	 * @param string $file JSON file uploaded to import.
+	 * @return void
+	 */
 	private function import_terms( $file ) {
 		if ( isset( $file['error'] ) && 0 !== $file['error'] ) {
 			import_failure();
@@ -167,6 +187,13 @@ class ContentTaxonomyExport {
 		}
 	}
 
+	/**
+	 * Update if give term exist in the database, otherwise create it.
+	 *
+	 * @param WP_TERM $given_term Give term to be stored in the databse.
+	 * @param int     $parent ID of the parent term.
+	 * @return array|boolean
+	 */
 	private function create_or_update_term( $given_term, $parent = 0 ) {
 		$term = get_term_by( 'slug', $given_term->slug, $given_term->taxonomy );
 		if ( false !== $term ) {
@@ -197,6 +224,11 @@ class ContentTaxonomyExport {
 		}
 	}
 
+	/**
+	 * Pass through HTTP parameter to indicate that the request is failed.
+	 *
+	 * @return void
+	 */
 	private function import_failure() {
 		$query = $_GET;
 		$query['submited'] = 'true';
@@ -204,7 +236,10 @@ class ContentTaxonomyExport {
 
 		// rebuild url.
 		$query_result = http_build_query( $query );
-		header( 'location: ' . $_SERVER['PHP_SELF'] . '?' . $query_result );
+
+		if ( isset( $_SERVER['PHP_SELF'] ) ) {
+			header( 'location: ' . esc_url_raw( wp_unslash( $_SERVER['PHP_SELF'] ) ) . '?' . $query_result );
+		}
 	}
 }
 

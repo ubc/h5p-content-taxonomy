@@ -169,7 +169,7 @@ export default () => {
                 <Select
                     selected={ facultySelected }
                     isMulti={ false }
-                    options={ currentTab === 1 ? format2levelTermsOptions(userFaculty) : format2levelTermsOptions(allFaculty) }
+                    options={ format2levelTermsOptions(userFaculty) }
                     placeholder="Select Faculty..."
                     onChange={ optionSelected => {
                         setFacultySelected(optionSelected);

@@ -336,7 +336,7 @@ window.h5pTaxonomy.listView = {};
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select2__WEBPACK_IMPORTED_MODULE_1__["default"], {
     selected: facultySelected,
     isMulti: false,
-    options: currentTab === 1 ? Object(_helper_js__WEBPACK_IMPORTED_MODULE_2__["format2levelTermsOptions"])(userFaculty) : Object(_helper_js__WEBPACK_IMPORTED_MODULE_2__["format2levelTermsOptions"])(allFaculty),
+    options: Object(_helper_js__WEBPACK_IMPORTED_MODULE_2__["format2levelTermsOptions"])(userFaculty),
     placeholder: "Select Faculty...",
     onChange: optionSelected => {
       setFacultySelected(optionSelected);

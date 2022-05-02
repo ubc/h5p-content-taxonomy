@@ -1,6 +1,6 @@
 <?php
 /**
- * UBC H5P Addon - Taxonomy
+ * UBC H5P Addon - Content Taxonomy
  *
  * @package     UBC H5P
  * @author      Kelvin Xu
@@ -8,9 +8,9 @@
  * @license     GPL-2.0-or-later
  *
  * @wordpress-plugin
- * Plugin Name: UBC H5P Addon - Taxonomy
+ * Plugin Name: UBC H5P Addon - Content Taxonomy
  * Plugin URI:  https://ubc.ca/
- * Description: Add pre-defined taxonomies as dropdown for h5p content.
+ * Description: Provide a way to attach faculties and disciplines to H5P contents.
  * Version:     1.0.4
  * Author:      Kelvin Xu
  * Text Domain: ubc-h5p-taxonomy

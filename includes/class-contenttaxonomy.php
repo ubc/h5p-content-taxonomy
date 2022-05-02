@@ -32,7 +32,7 @@ class ContentTaxonomy {
 		add_action( 'toplevel_page_h5p', array( $this, 'enqueue_listing_view_script' ), 99 );
 		add_action( 'load-h5p-content_page_h5p_new', array( $this, 'enqueue_add_new_content_script' ), 10 );
 
-		add_action( 'admin_init', array( $this, 'check_user_faculty' ) );
+		add_action( 'admin_init', array( $this, 'redirect_to_profiles_page_if_faculty_not_selected' ) );
 		add_action( 'wp_ajax_ubc_h5p_list_contents', array( $this, 'list_contents' ) );
 		add_filter( 'wp_redirect', array( $this, 'h5p_content_taxonomy_actions' ) );
 	}
@@ -113,6 +113,10 @@ class ContentTaxonomy {
 	 * @return void
 	 */
 	public function additional_user_meta_field( $user ) {
+		if ( Helper::is_role_subscriber() ) {
+			return;
+		}
+
 		$user_faculty           = get_user_meta( $user->ID, 'user_faculty', true );
 		$user_does_have_faculty = ( false !== $user_faculty && is_array( $user_faculty ) && ! empty( $user_faculty ) );
 		$faculties              = Helper::get_taxonomy_hierarchy( 'ubc_h5p_content_faculty' );
@@ -124,7 +128,7 @@ class ContentTaxonomy {
 			<?php endif; ?>
 			<table class="form-table">
 				<tr>
-					<th><label for="twitter"><?php echo esc_textarea( __( 'Which faculty do you belong?', 'ubc-h5p-taxonomy' ) ); ?></label></th>
+					<th><label for="user_faculty"><?php echo esc_textarea( __( 'Which faculty do you belong?', 'ubc-h5p-taxonomy' ) ); ?></label></th>
 					<td>
 						<select name="user_faculty[]" id="user_faculty" multiple style="width: 100%; height: 300px; padding: 10px;">
 						<?php foreach ( $faculties as $key => $campus ) : ?>
@@ -151,8 +155,15 @@ class ContentTaxonomy {
 	 * @return void
 	 */
 	public function save_additional_user_meta_field( $user_id ) {
-		// phpcs:ignore
-		$faculty = isset( $_POST['user_faculty'] ) ? array_map(
+		if ( Helper::is_role_subscriber() ) {
+			return;
+		}
+
+		if ( empty( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'update-user_' . $user_id ) ) {
+			return;
+		}
+
+		$faculty = isset( $_POST['user_faculty'] ) && is_array( $_POST['user_faculty'] ) ? array_map(
 			function( $fac ) {
 				return sanitize_text_field( wp_unslash( $fac ) );
 			},
@@ -168,24 +179,20 @@ class ContentTaxonomy {
 	 *
 	 * @return void
 	 */
-	public function check_user_faculty() {
+	public function redirect_to_profiles_page_if_faculty_not_selected() {
 		global $pagenow;
 
-		if ( ! is_user_logged_in() ) {
+		if ( Helper::is_role_subscriber() || Helper::is_role_administrator() ) {
 			return;
 		}
 
 		$user_faculty = get_user_meta( get_current_user_id(), 'user_faculty', true );
 
-		if ( current_user_can( 'manage_options' ) ) {
-			return;
-		}
-
 		if ( ( false === $user_faculty || empty( $user_faculty ) ) && 'profile.php' !== $pagenow ) {
 			wp_safe_redirect( admin_url( 'profile.php?action=faculty_redirect' ) );
 			exit;
 		}
-	}//end check_user_faculty()
+	}//end redirect_to_profiles_page_if_faculty_not_selected()
 
 	/**
 	 * Enqueue necessary Javascript to accomplish the scroll animation on users profile page.
@@ -208,15 +215,7 @@ class ContentTaxonomy {
 	 * @return void
 	 */
 	public function enqueue_listing_view_script() {
-		if ( isset( $_GET['task'] ) && 'results' === $_GET['task'] ) {
-			return;
-		}
-
-		if ( isset( $_GET['task'] ) && 'show' === $_GET['task'] ) {
-			return;
-		}
-
-		if ( current_user_can( 'manage_options' ) ) {
+		if ( ! Helper::is_h5p_list_view_page() || Helper::is_role_administrator() ) {
 			return;
 		}
 
@@ -270,6 +269,7 @@ class ContentTaxonomy {
 		parse_str( $url_components['query'], $params );
 
 		// Save taxonomies when creating new h5p content.
+		// phpcs:ignore
 		if ( isset( $_GET['page'] ) && 'h5p_new' === $_GET['page'] && isset( $params['id'] ) && isset( $_REQUEST['ubc-h5p-content-taxonomy'] ) ) {
 			// phpcs:ignore
 			$this->save_taxonomy( intval( $params['id'] ), $_REQUEST['ubc-h5p-content-taxonomy'] );
@@ -277,7 +277,9 @@ class ContentTaxonomy {
 		}
 
 		// Deleting taxonomies when deleting h5p content.
+		// phpcs:ignore
 		if ( isset( $_GET['id'] ) && isset( $_GET['page'] ) && 'h5p_new' === $_GET['page'] && isset( $_GET['delete'] ) ) {
+			// phpcs:ignore
 			$this->delete_taxonomy( intval( $_GET['id'] ) );
 			do_action( 'ubc_h5p_content_taxonomy_delete_content' );
 		}
@@ -317,6 +319,12 @@ class ContentTaxonomy {
 		}
 	}//end save_taxonomy()
 
+	/**
+	 * Delete all taxonomy terms related to H5P content.
+	 *
+	 * @param string $id ID of the current H5P content.
+	 * @return void
+	 */
 	private function delete_taxonomy( $id ) {
 		ContentTaxonomyDB::clear_content_terms( $id );
 	}
@@ -373,27 +381,24 @@ class ContentTaxonomy {
 		$limit   = isset( $_POST['limit'] ) ? sanitize_text_field( wp_unslash( $_POST['limit'] ) ) : null;
 		$offset  = isset( $_POST['offset'] ) ? sanitize_text_field( wp_unslash( $_POST['offset'] ) ) : null;
 		$search  = isset( $_POST['search'] ) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : null;
+		// phpcs:ignore
 		$terms   = isset( $_POST['terms'] ) ? json_decode( html_entity_decode( stripslashes( $_POST['terms'] ) ) ) : array();
+		// phpcs:ignore
 		$tags    = isset( $_POST['tags'] ) ? json_decode( html_entity_decode( stripslashes( $_POST['tags'] ) ) ) : array();
 
-		// Nothing is changed for administrator or network administrator.
-		if ( current_user_can( 'manage_options' ) ) {
-			wp_send_json_success( $contents );
-		}
-
 		// If user has editor role. Then they should be able to see their own contents + contents within their assigned faculty.
-		if ( current_user_can( 'edit_others_h5p_contents' ) ) {
+		if ( Helper::is_role_editor() || Helper::is_role_administrator() ) {
 			$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $revert, $limit, $offset, $search, $terms, $tags );
 			wp_send_json_success( $contents );
 		}
 
 		// If user has author role. Then they should only be able to see their own contents.
-		if ( ( current_user_can( 'edit_h5p_contents' ) && 'faculty' === $context ) || ! current_user_can( 'edit_h5p_contents' ) ) {
-			wp_send_json_success( array() );
+		if ( Helper::is_role_author() ) {
+			$contents = ContentTaxonomyDB::get_contents( 'self', $sortby, $revert, $limit, $offset, $search, $terms, $tags );
+			wp_send_json_success( $contents );
 		}
 
-		$contents = ContentTaxonomyDB::get_contents( $context, $sortby, $revert, $limit, $offset, $search, $terms, $tags );
-		wp_send_json_success( $contents );
+		wp_send_json_success( array() );
 	}//end list_contents()
 }
 

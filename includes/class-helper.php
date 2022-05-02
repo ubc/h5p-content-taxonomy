@@ -41,7 +41,53 @@ class Helper {
 		}
 		// send the results back to the caller.
 		return $children;
-	}
+	}//end get_taxonomy_hierarchy()
+
+	/**
+	 * If current page is h5p content listing page.
+	 *
+	 * @return boolean
+	 */
+	public static function is_h5p_list_view_page() {
+		// phpcs:ignore
+		return isset( $_GET['page'] ) && 'h5p' === $_GET['page'] && ! isset( $_GET['task'] ) && ! isset( $_GET['id'] );
+	}//end is_h5p_list_view_page()
+
+	/**
+	 * Detect if current user is an administrator.
+	 *
+	 * @return boolean
+	 */
+	public static function is_role_administrator() {
+		return is_user_logged_in() && current_user_can( 'manage_options' );
+	}//end is_role_administrator()
+
+	/**
+	 * Detect if current user is an editor.
+	 *
+	 * @return boolean
+	 */
+	public static function is_role_editor() {
+		return is_user_logged_in() && ! current_user_can( 'manage_options' ) && current_user_can( 'edit_others_h5p_contents' );
+	}//end is_role_editor()
+
+	/**
+	 * Detect if current user is an author.
+	 *
+	 * @return boolean
+	 */
+	public static function is_role_author() {
+		return is_user_logged_in() && ! current_user_can( 'manage_options' ) && ! current_user_can( 'edit_others_h5p_contents' ) && current_user_can( 'edit_h5p_contents' );
+	}//end is_role_author()
+
+	/**
+	 * Detect if current user is a subscriber.
+	 *
+	 * @return boolean
+	 */
+	public static function is_role_subscriber() {
+		return is_user_logged_in() && ! current_user_can( 'manage_options' ) && ! current_user_can( 'edit_others_h5p_contents' ) && ! current_user_can( 'edit_h5p_contents' );
+	}//end is_role_subscriber()
 
 	/**
 	 * Write stuff to error log for debugging.
@@ -55,5 +101,5 @@ class Helper {
 		} else {
 			error_log( $log );
 		}
-	}
+	}//end write_log()
 }
