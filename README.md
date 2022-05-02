@@ -18,3 +18,8 @@ Build JS and CSS for production
 
 Install phpcs with WordPress coding standard
 `composer install`
+
+## Change Log
+
+### 1.0.5
+- Refactor including add PHP/JS hooks. UX and performance improvements.
