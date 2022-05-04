@@ -215,7 +215,7 @@ class ContentTaxonomy {
 	 * @return void
 	 */
 	public function enqueue_listing_view_script() {
-		if ( ! Helper::is_h5p_list_view_page() || Helper::is_role_administrator() ) {
+		if ( ! Helper::is_h5p_list_view_page() ) {
 			return;
 		}
 

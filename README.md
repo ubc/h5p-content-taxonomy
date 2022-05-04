@@ -21,6 +21,9 @@ Install phpcs with WordPress coding standard
 
 ## Change Log
 
+### 1.0.7
+- Enable admin UI for listing view
+
 ### 1.0.6
 - Hotfix - User login check break H5P embed functionality.
 
