@@ -21,5 +21,8 @@ Install phpcs with WordPress coding standard
 
 ## Change Log
 
+### 1.0.6
+- Hotfix - User login check break H5P embed functionality.
+
 ### 1.0.5
 - Refactor including add PHP/JS hooks. UX and performance improvements.

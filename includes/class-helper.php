@@ -59,7 +59,7 @@ class Helper {
 	 * @return boolean
 	 */
 	public static function is_role_administrator() {
-		return is_user_logged_in() && current_user_can( 'manage_options' );
+		return current_user_can( 'manage_options' );
 	}//end is_role_administrator()
 
 	/**
@@ -68,7 +68,7 @@ class Helper {
 	 * @return boolean
 	 */
 	public static function is_role_editor() {
-		return is_user_logged_in() && ! current_user_can( 'manage_options' ) && current_user_can( 'edit_others_h5p_contents' );
+		return ! current_user_can( 'manage_options' ) && current_user_can( 'edit_others_h5p_contents' );
 	}//end is_role_editor()
 
 	/**
@@ -77,7 +77,7 @@ class Helper {
 	 * @return boolean
 	 */
 	public static function is_role_author() {
-		return is_user_logged_in() && ! current_user_can( 'manage_options' ) && ! current_user_can( 'edit_others_h5p_contents' ) && current_user_can( 'edit_h5p_contents' );
+		return ! current_user_can( 'manage_options' ) && ! current_user_can( 'edit_others_h5p_contents' ) && current_user_can( 'edit_h5p_contents' );
 	}//end is_role_author()
 
 	/**
@@ -86,7 +86,7 @@ class Helper {
 	 * @return boolean
 	 */
 	public static function is_role_subscriber() {
-		return is_user_logged_in() && ! current_user_can( 'manage_options' ) && ! current_user_can( 'edit_others_h5p_contents' ) && ! current_user_can( 'edit_h5p_contents' );
+		return ! current_user_can( 'manage_options' ) && ! current_user_can( 'edit_others_h5p_contents' ) && ! current_user_can( 'edit_h5p_contents' );
 	}//end is_role_subscriber()
 
 	/**
