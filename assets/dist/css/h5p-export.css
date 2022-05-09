@@ -1,21 +1,2 @@
-.postbox {
-  margin-top: 10px;
-  padding: 10px; }
+.postbox{margin-top:10px;padding:10px}.form-table th{padding:15px 10px}label{margin-bottom:5px;display:block}.error{padding:15px 10px;color:red}.success{padding:15px 10px;color:green}
 
-.form-table th {
-  padding: 15px 10px; }
-
-label {
-  margin-bottom: 5px;
-  display: block; }
-
-.error {
-  padding: 15px 10px;
-  color: red; }
-
-.success {
-  padding: 15px 10px;
-  color: green; }
-
-
-/*# sourceMappingURL=h5p-export.css.map*/

@@ -1,27 +1,2 @@
-input[id^=react-select-] {
-  box-shadow: none !important;
-  min-height: 0 !important; }
+input[id^=react-select-]{box-shadow:none !important;min-height:0 !important}#h5p-taxonomy{margin-top:20px;max-width:960px}#h5p-taxonomy .taxonomy.postbox{padding:15px}#h5p-taxonomy .taxonomy.postbox>h2{margin-top:0}.custom-option{transition:background 60ms}.custom-option:hover{transition-delay:60ms;background:#deebff}.custom-option.custom-select__option--is-focused{background:none}.custom-option.custom-select__option--is-selected{background:#2684FF}
 
-#h5p-taxonomy {
-  margin-top: 20px;
-  max-width: 960px; }
-  #h5p-taxonomy .taxonomy.postbox {
-    padding: 15px; }
-    #h5p-taxonomy .taxonomy.postbox > h2 {
-      margin-top: 0; }
-
-.custom-option {
-  transition: background 60ms; }
-
-.custom-option:hover {
-  transition-delay: 60ms;
-  background: #deebff; }
-
-.custom-option.custom-select__option--is-focused {
-  background: none; }
-
-.custom-option.custom-select__option--is-selected {
-  background: #2684FF; }
-
-
-/*# sourceMappingURL=h5p-new.css.map*/

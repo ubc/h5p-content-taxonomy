@@ -21,6 +21,9 @@ Install phpcs with WordPress coding standard
 
 ## Change Log
 
+### 1.0.9
+- Rebuild assets for production.
+
 ### 1.0.8
 - Updated taxonomy labels.
 
