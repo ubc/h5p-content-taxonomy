@@ -21,6 +21,9 @@ Install phpcs with WordPress coding standard
 
 ## Change Log
 
+### 1.1.0
+- Merged change to master.
+
 ### 1.0.9
 - Rebuild assets for production.
 
