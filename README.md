@@ -21,6 +21,9 @@ Install phpcs with WordPress coding standard
 
 ## Change Log
 
+### 1.1.2
+- Allow function to be called outside of the app to reset pagination index and fetcing content.
+
 ### 1.1.1
 - Administrator should see the full faculty list under dropdown without assign to all the faculties under profiles page.
 - Administrator should see all the H5P content by default without assign to all the faculties under profiles page.

@@ -57,6 +57,15 @@ export default () => {
     // Entire faculty list.
     const allFaculty = ubc_h5p_admin.faculties_list;
 
+    const fetchContent = () => {
+        if( offset === 0 ) {
+            doFetch();
+        } else {
+            setOffset( 0 );
+        }
+    };
+    window.h5pTaxonomy.listView.fetchContent = fetchContent;
+
     // Save the previous Offset value.
     useEffect(() => {
         doFetch();
@@ -65,11 +74,7 @@ export default () => {
     // Refetch the result from database if any of the filter changes.
     // This is a critical fix. The offset need to be reset after any of the filter changed.
     useEffect(() => {
-        if( offset === 0 ) {
-            doFetch();
-        } else {
-            setOffset( 0 );
-        }
+        fetchContent();
     }, [ search, currentTab, sort, revert, facultySelected, disciplineSelected, tagSelected ]);
 
     // Fetch data from the database.
@@ -82,7 +87,6 @@ export default () => {
         
         fetch();
     }
-    window.h5pTaxonomy.listView.doFetch = doFetch;
 
     const updateSort = newSort => {
         if( -1 === newSort ) {
