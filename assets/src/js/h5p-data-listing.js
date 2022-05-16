@@ -1,4 +1,4 @@
-import React, {useState, useEffect, Fragment} from 'react';
+import React, { useState, useEffect, Fragment, useRef } from 'react';
 import Select from './select2';
 import { format2levelTermsOptions } from './helper.js';
 
@@ -18,13 +18,24 @@ export default () => {
     const [tagSelected, setTagSelected] = useState(null);
     const limit = 20;
 
-    const tabOptions = wp.hooks.applyFilters('h5p-listing-view-additional-tab', [
+    const previousOffset = useRef( 0 );
+
+    const tabOptions = wp.hooks.applyFilters('h5p-listing-view-additional-tab', ubc_h5p_admin.is_user_admin ? [
         {
-            label: 'My H5P content',
+            label: 'My H5P Content',
             slug: 'self'
         },
         {
-            label: 'My faculty H5P content',
+            label: 'Community H5P Contents',
+            slug: 'admin'
+        }
+    ] : [
+        {
+            label: 'My H5P Content',
+            slug: 'self'
+        },
+        {
+            label: 'My Faculty H5P Content',
             slug: 'faculty'
         }
     ]);
@@ -46,10 +57,20 @@ export default () => {
     // Entire faculty list.
     const allFaculty = ubc_h5p_admin.faculties_list;
 
-    // Refetch the result from database if any of the filter changes.
+    // Save the previous Offset value.
     useEffect(() => {
         doFetch();
-    }, [ currentTab, offset, sort, revert, facultySelected, disciplineSelected, tagSelected ]);
+    }, [ offset ]);
+
+    // Refetch the result from database if any of the filter changes.
+    // This is a critical fix. The offset need to be reset after any of the filter changed.
+    useEffect(() => {
+        if( offset === 0 ) {
+            doFetch();
+        } else {
+            setOffset( 0 );
+        }
+    }, [ search, currentTab, sort, revert, facultySelected, disciplineSelected, tagSelected ]);
 
     // Fetch data from the database.
     const doFetch = () => {
@@ -99,7 +120,7 @@ export default () => {
         formData.append( 'nonce', ubc_h5p_admin.security_nonce );
         formData.append( 'terms', JSON.stringify(terms));
 
-        formData = wp.hooks.applyFilters('h5p-listing-view-additional-form-data', formData, currentTab);
+        formData = wp.hooks.applyFilters('h5p-listing-view-additional-form-data', formData, tabOptions[currentTab]);
 
         let response = await fetch(ajaxurl, {
             method: 'POST',
@@ -131,7 +152,7 @@ export default () => {
     }
 
     const moreFilters = () => {
-        return wp.hooks.applyFilters('h5p-listing-view-additional-filters', '', currentTab);
+        return wp.hooks.applyFilters('h5p-listing-view-additional-filters', '', tabOptions[currentTab]);
     };
 
     return data ? (
@@ -143,8 +164,6 @@ export default () => {
                             key={ index }
                             onClick={ e => {
                                 currentTab !== index ? setCurrentTab( index ) : null;
-                                setOffset(0);
-                                updateSort( -1 );
                             }}
                         >
                             { tab.label}
@@ -169,7 +188,7 @@ export default () => {
                 <Select
                     selected={ facultySelected }
                     isMulti={ false }
-                    options={ format2levelTermsOptions(userFaculty) }
+                    options={ format2levelTermsOptions(ubc_h5p_admin.is_user_admin ? allFaculty : userFaculty) }
                     placeholder="Select Faculty..."
                     onChange={ optionSelected => {
                         setFacultySelected(optionSelected);

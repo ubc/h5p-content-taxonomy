@@ -169,7 +169,18 @@ class ContentTaxonomyDB {
 		/** End Term Query */
 
 		// Based on the context whether the query is for user only, or for faculty.
-		$context_query    = apply_filters( 'h5p_content_taxonomy_context_query', 'self' === $context ? ' WHERE u.ID = ' . get_current_user_id() : ' WHERE hc.id IN (SELECT DISTINCT content_id from ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id IN (' . implode( ',', $user_faculty_ids ) . ')) AND u.ID != ' . get_current_user_id(), $context );
+		switch ( $context ) {
+			case 'self':
+				$context_query = ' WHERE u.ID = ' . get_current_user_id();
+				break;
+			case 'faculty':
+				$context_query = ' WHERE hc.id IN (SELECT DISTINCT content_id from ' . $wpdb->prefix . 'h5p_contents_taxonomy WHERE term_id IN (' . implode( ',', $user_faculty_ids ) . ')) AND u.ID != ' . get_current_user_id();
+				break;
+			case 'admin':
+				$context_query = ' WHERE u.ID != ' . get_current_user_id();
+				break;
+		}
+		$context_query    = apply_filters( 'h5p_content_taxonomy_context_query', $context_query, $context );
 		$search_query     = empty( $search ) ? '' : " AND ( hc.title LIKE '%" . $search . "%' OR u.display_name LIKE '%" . $search . "%' )";
 		$sortby_query     = ' ORDER BY ' . $order_by_array[ $sortby ] . ( $reverse_order ? ' ASC' : ' DESC' );
 		$pagination_query = ' LIMIT ' . ( $offset ? $offset : '0' ) . ' ,' . ( $limit ? $limit : '20' );

@@ -21,6 +21,11 @@ Install phpcs with WordPress coding standard
 
 ## Change Log
 
+### 1.1.1
+- Administrator should see the full faculty list under dropdown without assign to all the faculties under profiles page.
+- Administrator should see all the H5P content by default without assign to all the faculties under profiles page.
+- Bug fix - Query pagination Index should be reset once any of the filtered changed.
+
 ### 1.1.0
 - Merged change to master.
 

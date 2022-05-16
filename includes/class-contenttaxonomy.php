@@ -264,6 +264,7 @@ class ContentTaxonomy {
 				'user_name'              => wp_get_current_user()->user_login,
 				'admin_url'              => admin_url(),
 				'can_user_editor_others' => current_user_can( 'edit_others_h5p_contents' ),
+				'is_user_admin'          => Helper::is_role_administrator(),
 				'security_nonce'         => wp_create_nonce( 'security' ),
 				'faculties_list'         => Helper::get_taxonomy_hierarchy( 'ubc_h5p_content_faculty' ),
 				'disciplines_list'       => Helper::get_taxonomy_hierarchy( 'ubc_h5p_content_discipline' ),
