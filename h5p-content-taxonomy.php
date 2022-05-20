@@ -11,7 +11,7 @@
  * Plugin Name: UBC H5P Addon - Content Taxonomy
  * Plugin URI:  https://ubc.ca/
  * Description: Provide a way to attach faculties and disciplines to H5P contents.
- * Version:     1.1.2
+ * Version:     1.1.3
  * Author:      Kelvin Xu
  * Text Domain: ubc-h5p-taxonomy
  * License:     GPL v2 or later

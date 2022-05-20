@@ -21,6 +21,9 @@ Install phpcs with WordPress coding standard
 
 ## Change Log
 
+### 1.1.3
+- 'Last Updated' timestamp has been switched from UTC time to Local time.
+
 ### 1.1.2
 - Allow function to be called outside of the app to reset pagination index and fetcing content.
 

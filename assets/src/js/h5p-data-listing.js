@@ -159,6 +159,22 @@ export default () => {
         return wp.hooks.applyFilters('h5p-listing-view-additional-filters', '', tabOptions[currentTab]);
     };
 
+    const toLocalTime = utcTime => {
+        var date = new Date( utcTime + ' UTC' );
+        return date.toLocaleString(
+            'en-US', 
+            {
+                hour12: false,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }
+        );
+    }
+
     return data ? (
         <Fragment>
             { ! ubc_h5p_admin.can_user_editor_others ? null : <div className="h5p-button-groups">
@@ -304,7 +320,7 @@ export default () => {
                             <td>{ entry.user_name }</td>
                             <td>{ faculties.join(',') }</td>
                             <td>{ formattedTags }</td>
-                            <td>{ entry.updated_at }</td>
+                            <td>{ toLocalTime( entry.updated_at ) }</td>
                             <td><a href={`${ubc_h5p_admin.admin_url}admin.php?page=h5p&task=results&id=${entry.id}`}>Results</a></td>
                         </tr>
                     );
