@@ -57,6 +57,11 @@
 #h5p-contents{
     table{
         table-layout: auto;
+
+        tr:nth-child(odd){
+            background: #f6f7f7;
+        }
+        
         th[role=button]{
             cursor: pointer;
             color: #1572b7;
@@ -79,6 +84,23 @@
 
                 @media only screen and (min-width: 1280px) {
                     width: 300px;
+                }
+            }
+        }
+
+        .column-title{
+            width: 300px;
+        }
+
+        .row-actions{
+            > a{
+                line-height: 1;
+                padding-left: .3rem;
+                padding-right: .3rem;
+                cursor: pointer;
+
+                &:not(:first-child){
+                    border-left: 1px solid #ababab;
                 }
             }
         }

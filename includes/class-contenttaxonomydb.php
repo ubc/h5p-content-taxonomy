@@ -129,6 +129,8 @@ class ContentTaxonomyDB {
 		$user_faculty_ids = get_user_meta( get_current_user_id(), 'user_faculty', true );
 
 		$base_select = "SELECT hc.title AS title, hl.title AS content_type, u.display_name AS user_name, GROUP_CONCAT(DISTINCT t.name SEPARATOR ';') AS tags, hc.updated_at AS updated_at, hc.id AS id, u.ID AS user_id, hl.name AS content_type_id";
+		$base_select .= ', ' . implode( ', ', apply_filters( 'h5p_add_field_to_query_response', array() ) );
+
 		$base_count  = 'SELECT COUNT(*)';
 
 		$base_query = ' FROM ' . $wpdb->prefix . 'h5p_contents hc

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment, useRef } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import Select from './select2';
 import { format2levelTermsOptions } from './helper.js';
 
@@ -18,7 +18,7 @@ export default () => {
     const [tagSelected, setTagSelected] = useState(null);
     const limit = 20;
 
-    const previousOffset = useRef( 0 );
+    //const additionalTableColumns
 
     const tabOptions = wp.hooks.applyFilters('h5p-listing-view-additional-tab', ubc_h5p_admin.is_user_admin ? [
         {
@@ -278,7 +278,6 @@ export default () => {
                                 updateSort(0);
                             }}
                         >Last Modified</th>
-                        <th tabIndex="0"></th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -315,13 +314,24 @@ export default () => {
 
                     return (
                         <tr key={ index }>
-                            <td><a href={`${ubc_h5p_admin.admin_url}admin.php?page=h5p_new&id=${entry.id}`}>{ entry.title }</a></td>
+                            <td className='column-title'>
+                                <a className='row-title' href={`${ubc_h5p_admin.admin_url}admin.php?page=h5p_new&id=${entry.id}`}>{ entry.title }</a>
+                                <div className='row-actions'>
+                                    {
+                                        wp.hooks.applyFilters('h5p-additional-data-row-actions', (
+                                            <Fragment>
+                                                <a role="button" href={`${ubc_h5p_admin.admin_url}admin.php?page=h5p_new&id=${entry.id}`}>Edit</a>
+                                                <a role="button" href={`${ubc_h5p_admin.admin_url}admin.php?page=h5p&task=results&id=${entry.id}`}>Results</a>
+                                            </Fragment>
+                                        ), entry)
+                                    }
+                                </div>
+                            </td>
                             <td>{ entry.content_type }</td>
                             <td>{ entry.user_name }</td>
                             <td>{ faculties.join(',') }</td>
                             <td>{ formattedTags }</td>
                             <td>{ toLocalTime( entry.updated_at ) }</td>
-                            <td><a href={`${ubc_h5p_admin.admin_url}admin.php?page=h5p&task=results&id=${entry.id}`}>Results</a></td>
                         </tr>
                     );
                 }) }
