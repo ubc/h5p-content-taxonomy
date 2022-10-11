@@ -21,6 +21,10 @@ Install phpcs with WordPress coding standard
 
 ## Change Log
 
+### 1.1.4
+- Updated NPM dependency
+- Add more JavaScript/PHP filter for content recovery addon
+
 ### 1.1.3
 - 'Last Updated' timestamp has been switched from UTC time to Local time.
 
