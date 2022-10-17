@@ -21,6 +21,9 @@ Install phpcs with WordPress coding standard
 
 ## Change Log
 
+### 1.1.5
+- Bug fix - fixed an issue where no contents will be returned to the list view if 'h5p_add_field_to_query_response' filter returns empty array.
+
 ### 1.1.4
 - Updated NPM dependency
 - Add more JavaScript/PHP filter for content recovery addon
