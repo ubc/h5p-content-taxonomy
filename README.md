@@ -21,6 +21,9 @@ Install phpcs with WordPress coding standard
 
 ## Change Log
 
+### 1.1.6
+- Make the embed URL always available even the embed button is disabled by content author. It works the same way as set the 'H5P_EMBED_URL_ALWAYS_AVAILABLE' PHP constant. However, it does allows us to further filter the results.
+
 ### 1.1.5
 - Bug fix - fixed an issue where no contents will be returned to the list view if 'h5p_add_field_to_query_response' filter returns empty array.
 

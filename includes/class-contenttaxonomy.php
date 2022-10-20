@@ -35,6 +35,10 @@ class ContentTaxonomy {
 		add_action( 'admin_init', array( $this, 'redirect_to_profiles_page_if_faculty_not_selected' ) );
 		add_action( 'wp_ajax_ubc_h5p_list_contents', array( $this, 'list_contents' ) );
 		add_filter( 'wp_redirect', array( $this, 'h5p_content_taxonomy_actions' ) );
+
+		// Some of the clients would like to disable the embed button while the actual embeds are still working.
+		// Make the embed URL always available even though the embed button is disabled.
+		add_filter( 'h5p_embed_access', '__return_true' );
 	}
 
 	/**
